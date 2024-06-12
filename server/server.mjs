@@ -4,7 +4,7 @@ import cors from 'cors';
 import { check, validationResult } from 'express-validator';
 import { getUser } from './user-dao.mjs';
 
-import { getAllMemes, getMemeById, getRandomMeme, getRandomCaptions, restoreUsedMeme } from './meme-dao.mjs';
+import { getMemeById, getRandomMeme, getRandomCaptions, restoreUsedMeme, getCaptionById, checkMemeCaption } from './meme-dao.mjs';
 
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
@@ -57,9 +57,10 @@ app.use(session({
 app.use(passport.authenticate('session'));
 
 // ROUTES
-
+/*********************** MEMES **************************/
 // GET /api/memes 
 //TODO add controllo login
+// Retrieve a random meme
 app.get('/api/memes', (request, response) => {
     getRandomMeme()
         .then(meme => response.json(meme))
@@ -68,6 +69,7 @@ app.get('/api/memes', (request, response) => {
 
 // GET /api/memes/:id
 //TODO add controllo login
+// Retrieve a meme by id
 app.get('/api/memes/:id', (request, response) => {
     const id = request.params.id;
     console.log("id: " + id);
@@ -81,19 +83,58 @@ app.get('/api/memes/:id', (request, response) => {
         .catch(() => response.status(500).end());
 });
 
-// GET /api/captions
-app.get('/api/captions', (request, response) => {
-    getRandomCaptions()
+// UPDATE /api/memes/
+// Restore used meme
+app.put('/api/memes/', (request, response) => {
+    restoreUsedMeme()
         .then(meme => response.json(meme))
         .catch(() => response.status(500).end());
 });
 
-// UPDATE /api/memes/
-app.put('/api/memes/', (request, response) => {
-    restoreUsedMeme()
-    .then(meme => response.json(meme))
-    .catch(() => response.status(500).end());
+
+/*********************** CAPTIONS **************************/
+// GET /api/captions
+app.get('/api/captions/meme/:id', (request, response) => {
+    const id = request.params.id;
+    getRandomCaptions(id)
+        .then(captions => {
+            if (captions.error)
+                response.status(404).json(captions);
+            else
+                response.json(captions);
+        })
+        .catch(() => response.status(500).end());
 });
+
+//GET /api/captions/:id
+// Retrieve a caption by id
+app.get('/api/captions/:id', (request, response) => {
+    const id = request.params.id;
+    getCaptionById(id)
+        .then(caption => {
+            if (caption.error)
+                response.status(404).json(caption);
+            else
+                response.json(caption);
+        })
+        .catch(() => response.status(500).end());
+});
+
+//GET /api/captions/:captionId/meme/:memeId
+// Check if caption is associated with meme
+app.get('/api/captions/:captionId/meme/:memeId', (request, response) => {
+    const captionId = request.params.id;
+    const memeId = request.params.memeId;
+    checkMemeCaption(captionId, memeId)
+        .then(result => response.json(result))
+        .catch(() => response.status(500).end());
+});
+
+/*********************** SESSIONS **************************/
+
+
+
+
 
 
 // POST /api/sessions

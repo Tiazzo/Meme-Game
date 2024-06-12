@@ -98,35 +98,44 @@ export const restoreUsedMeme = () => {
 //Retrieve seven random captions, two of which are associates with a meme
 export const getRandomCaptions = (idMeme) => {
     return new Promise((resolve, reject) => {
-        //Array of seven random captions
         let captions = [];
-        //Select two random captions associated with a meme
-        const sqlCorrectCaptions = 'SELECT * FROM meme_caption WHERE meme_id = ? ORDER BY RANDOM() LIMIT 2';
+
+        // Query per selezionare due didascalie corrette associate al meme
+        const sqlCorrectCaptions = 'SELECT c.id, c.text FROM caption c JOIN meme_caption mc ON c.id = mc.caption_id WHERE mc.meme_id = ? ORDER BY RANDOM() LIMIT 2';
+
         db.all(sqlCorrectCaptions, [idMeme], (err, correctCaptions) => {
             if (err) {
                 reject(err);
-            }
-            else {
-                //Add two correct captions to the array
-                captions = correctCaptions.map((row) => new MemeCaption(row.caption_id));
-            }
-            //Select five random captions not associated with the meme
-            const sqlIncorrectCaptions = 'SELECT * FROM caption WHERE id NOT IN (SELECT caption_id FROM meme_caption WHERE meme_id = ?) ORDER BY RANDOM() LIMIT 5';
-            db.all(sqlIncorrectCaptions, [idMeme], (err, incorrectCaptions) => {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    //Add five incorrect captions to the array
-                    captions = captions.concat(incorrectCaptions.map((row) => new MemeCaption(row.id)));
-                    resolve(captions);
-                }
-            });
+            } else {
+                // Aggiungi due didascalie corrette all'array
+                captions = correctCaptions.map(row => ({ id: row.id, text: row.text }));
 
+                // Query per selezionare cinque didascalie casuali non associate al meme
+                const sqlIncorrectCaptions = `
+                    SELECT c.id, c.text 
+                    FROM caption c 
+                    WHERE c.id NOT IN (
+                        SELECT mc.caption_id 
+                        FROM meme_caption mc 
+                        WHERE mc.meme_id = ?
+                    ) 
+                    ORDER BY RANDOM() LIMIT 5
+                `;
+
+                db.all(sqlIncorrectCaptions, [idMeme], (err, incorrectCaptions) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        // Aggiungi cinque didascalie errate all'array
+                        captions = captions.concat(incorrectCaptions.map(row => ({ id: row.id, text: row.text })));
+                        resolve(captions);
+                    }
+                });
+            }
         });
-    }
-    );
+    });
 };
+
 
 // Retrieve a caption by id
 export const getCaptionById = (id) => {
@@ -136,10 +145,12 @@ export const getCaptionById = (id) => {
             if (err) {
                 reject(err);
             }
-            else if (row === undefined) {
+            else if (!row) {
+                console.log("Caption not found");
                 resolve({ error: 'Caption not found' });
             }
             else {
+                console.log(row);
                 const caption = new Caption(row.id, row.text);
                 resolve(caption);
             }
@@ -157,6 +168,21 @@ export const insertGameResult = (username, score) => {
             }
             else {
                 resolve(this.lastID);
+            }
+        });
+    });
+};
+
+// Check if caption is associated with meme
+export const checkMemeCaption = (captionId, memeId) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM meme_caption WHERE meme_id = ? AND caption_id = ?';
+        db.get(sql, [memeId, captionId], (err, row) => {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(row !== undefined);
             }
         });
     });
