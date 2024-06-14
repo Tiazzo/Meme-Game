@@ -131,12 +131,6 @@ app.get('/api/captions/:captionId/meme/:memeId', (request, response) => {
 });
 
 /*********************** SESSIONS **************************/
-
-
-
-
-
-
 // POST /api/sessions
 app.post('/api/sessions', function (req, res, next) {
     passport.authenticate('local', (err, user, info) => {
