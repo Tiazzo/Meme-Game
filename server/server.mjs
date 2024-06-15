@@ -3,9 +3,9 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { check, validationResult } from 'express-validator';
 import { getUser } from './user-dao.mjs';
-
 import { getMemeById, getRandomMeme, getRandomCaptions, restoreUsedMeme, getCaptionById, checkMemeCaption } from './meme-dao.mjs';
-
+import path from 'path';
+import { fileURLToPath } from 'url';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import session from 'express-session';
@@ -13,6 +13,8 @@ import session from 'express-session';
 // init
 const app = express();
 const port = 3001;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // middleware
 app.use(express.json());
@@ -55,6 +57,9 @@ app.use(session({
     saveUninitialized: false,
 }));
 app.use(passport.authenticate('session'));
+
+
+app.use('/public/images', express.static(path.join(__dirname, 'public/images')));
 
 // ROUTES
 /*********************** MEMES **************************/

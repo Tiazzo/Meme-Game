@@ -40,7 +40,7 @@ function LoginForm(props) {
             </Row>
             <Row className="justify-content-center align-items-center w-100">
                 <Col md={4} className="d-none d-md-block">
-                    <Image src="src/assets/dudes-young-man-giving-a-presentation-about-something.png" fluid />
+                    <Image src="dudes-young-man-giving-a-presentation-about-something.png" fluid />
                 </Col>
                 <Col md={4} className="form-container">
                     <h1 className="pb-3"><span style={{ color: "#181818" }}>Accedi</span></h1>
@@ -57,7 +57,7 @@ function LoginForm(props) {
                             <Form.Control
                                 type="email"
                                 value={username}
-                                placeholder="Example: john.doe@polito.it"
+                                placeholder="Example: pippo@polito.it"
                                 onChange={(ev) => setUsername(ev.target.value)}
                                 required
                             />
@@ -67,7 +67,7 @@ function LoginForm(props) {
                             <Form.Control
                                 type="password"
                                 value={password}
-                                placeholder="Enter the password."
+                                placeholder="secret password"
                                 onChange={(ev) => setPassword(ev.target.value)}
                                 required
                                 minLength={6}

@@ -53,12 +53,12 @@ export const getRandomMeme = () => {
             console.log(row);
             const meme = new Meme(row.id, row.meme_url, 1);
             // Mark meme as used
-            const sql = 'UPDATE meme SET used = 1 WHERE id = ?';
-            db.run(sql, [meme.id], (err) => {
-                if (err) {
-                    reject(err);
-                }
-            });
+            // const sql = 'UPDATE meme SET used = 1 WHERE id = ?';
+            // db.run(sql, [meme.id], (err) => {
+            //     if (err) {
+            //         reject(err);
+            //     }
+            // });
             resolve(meme);
         });
     });
@@ -107,10 +107,8 @@ export const getRandomCaptions = (idMeme) => {
             if (err) {
                 reject(err);
             } else {
-                // Aggiungi due didascalie corrette all'array
-                captions = correctCaptions.map(row => ({ id: row.id, text: row.text }));
-
-                // Query per selezionare cinque didascalie casuali non associate al meme
+                // Add correct captions to captions array
+                captions = correctCaptions.map(row => ({ id: row.id, text: row.text, correct: true }));
                 const sqlIncorrectCaptions = `
                     SELECT c.id, c.text 
                     FROM caption c 
@@ -126,8 +124,18 @@ export const getRandomCaptions = (idMeme) => {
                     if (err) {
                         reject(err);
                     } else {
-                        // Aggiungi cinque didascalie errate all'array
-                        captions = captions.concat(incorrectCaptions.map(row => ({ id: row.id, text: row.text })));
+                        // Add incorrect captions to captions array
+                        captions = captions.concat(incorrectCaptions.map(row => ({ id: row.id, text: row.text, correct: false })));
+                        //Shuffle array
+                        let currentIndex = captions.length;
+                        while (currentIndex != 0) {
+                            // Pick a remaining element
+                            let randomIndex = Math.floor(Math.random() * currentIndex);
+                            currentIndex--;
+                            // swap it with the current element
+                            [captions[currentIndex], captions[randomIndex]] = [
+                                captions[randomIndex], captions[currentIndex]];
+                        }
                         resolve(captions);
                     }
                 });
