@@ -5,7 +5,7 @@ import { LoginForm } from './components/Auth'
 import { Routes, Route, Navigate } from 'react-router-dom';
 import API from "./API.mjs";
 import NotFoundComponent from './components/NotFoundComponent';
-import GuestGame from './components/GuestGame';
+import Game from './components/Game';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -55,7 +55,7 @@ function App() {
               title="Ospite"
               description="Gioca un partida da un singolo round senza dover accedere."
               imageUrl="dudes-meme-with-sitting-sad-man.png"
-              link="/guest-game"
+              link="/game"
               button="Gioca"
             />
             <Card
@@ -72,7 +72,7 @@ function App() {
       <Route path='/login' element={
         loggedIn ? <Navigate replace to='/game' /> : <LoginForm login={handleLogin} />
       } />
-       <Route path="/guest-game" element={<GuestGame />} />
+       <Route path="/game" element={<Game isLoggedIn={true}/>} />
     </Routes>
   );
 }

@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { check, validationResult } from 'express-validator';
 import { getUser } from './user-dao.mjs';
-import { getMemeById, getRandomMeme, getRandomCaptions, restoreUsedMeme, getCaptionById, checkMemeCaption } from './meme-dao.mjs';
+import { getMemeById, getRandomMeme, getRandomCaptions, restoreUsedMeme, getCaptionById, checkMemeCaption, insertGameResult } from './meme-dao.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import passport from 'passport';
@@ -134,6 +134,15 @@ app.get('/api/captions/:captionId/meme/:memeId', (request, response) => {
         .then(result => response.json(result))
         .catch(() => response.status(500).end());
 });
+
+/*********************** History **************************/
+app.post('/api/games', (request, response) => {
+    const game = request.body;
+    insertGameResult(user, game)
+        .then(game => response.status(201).json(game))
+        .catch(() => response.status(500).end());
+});
+
 
 /*********************** SESSIONS **************************/
 // POST /api/sessions

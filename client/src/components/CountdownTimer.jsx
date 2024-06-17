@@ -5,22 +5,27 @@ const CountdownTimer = (props) => {
     const [seconds, setSeconds] = useState(props.initialSeconds);
 
     useEffect(() => {
-        // Exit early if countdown is finished or timerRunning is false
-        if (!props.timerRunning || seconds <= 0) {
-            if (seconds <= 0) {
-                props.onTimerExpired(); // Call the callback function provided by the parent component
-            }
-            return;
+        let timer = null;
+
+        const handleTimerTick = () => {
+            setSeconds((prevSeconds) => prevSeconds - 1);
+        };
+
+        const handleTimerExpired = () => {
+            props.onTimerExpired();
+            clearInterval(timer);
+        };
+
+        if (props.timerRunning && seconds > 0) {
+            timer = setInterval(handleTimerTick, 1000);
+        } else if (seconds <= 0) {
+            handleTimerExpired();
         }
 
-        // Set up the timer
-        const timer = setInterval(() => {
-            setSeconds((prevSeconds) => prevSeconds - 1);
-        }, 1000);
-
-        // Clean up the timer
-        return () => clearInterval(timer);
-    }, [props, seconds]);
+        return () => {
+            clearInterval(timer);
+        };
+    }, [props.timerRunning, seconds]); // dipendenze corrette
 
     const formatTime = (timeInSeconds) => {
         const seconds = (timeInSeconds % 60).toString().padStart(2, '0');

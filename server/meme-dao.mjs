@@ -3,7 +3,7 @@ import { Meme } from './models/meme.mjs';
 import { Caption } from './models/caption.mjs';
 import { MemeCaption } from './models/meme-caption.mjs';
 import { db } from './db.mjs';
-
+import dayjs from 'dayjs';
 // Retrieve all memes
 export const getAllMemes = () => {
     return new Promise((resolve, reject) => {
@@ -166,18 +166,34 @@ export const getCaptionById = (id) => {
     });
 };
 
-// Insert game result into database
-export const insertGameResult = (username, score) => {
+// Retrieve the last id of the game of the user
+export const getLastGameId = (username) => {
     return new Promise((resolve, reject) => {
-        const sql = 'INSERT INTO game_history (username, date, score) VALUES (?, datetime("now"), ?)';
-        db.run(sql, [username, score], function (err) {
+        const sql = 'SELECT MAX(id) as id FROM game_history WHERE username = ?';
+        db.get(sql, [username], (err, row) => {
             if (err) {
                 reject(err);
             }
             else {
-                resolve(this.lastID);
+                row ? id = row.id : id = 0;
+                resolve(id);
             }
         });
+    });
+};
+
+// Insert game result into database
+export const insertGameResult = (username, game) => {
+    return new Promise((resolve, reject) => {
+        id = getLastGameId(username);
+        for (const choice of game) {
+            const sql = 'INSERT INTO game_history (username, game_id, round, caption, caption_id, meme_id, image, correct, score, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            db.run(sql, [username, id, choice.index, choice.caption.id, choice.caption.text, choice.meme.id, choice.meme.url, choice.correct, choice.points, da], function (err) {
+                if (err) {
+                    reject(err);
+                }
+            });
+        }
     });
 };
 
@@ -195,6 +211,8 @@ export const checkMemeCaption = (captionId, memeId) => {
         });
     });
 };
+
+
 
 
 

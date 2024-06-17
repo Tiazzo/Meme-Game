@@ -1,15 +1,14 @@
-// GameGuest.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Spinner, Image, ToggleButtonGroup, ToggleButton, Form, Button } from 'react-bootstrap';
+import { Spinner, Image, Form, Button } from 'react-bootstrap';
 import '../style/GameComponent.css';
 import API from '../API.mjs';
 import CountdownTimer from './CountdownTimer';
-import ModalSubmitResponse from './ModalSubmitResponse';
+import { ModalSubmitResponse } from './ModalSubmitResponse';
 
-const GameGuest = () => {
+const AuthenticatedGame = () => {
     const navigate = useNavigate();
-    const [meme, setMeme] = useState('');
+    const [meme, setMeme] = useState();
     const [captions, setCaptions] = useState([]);
     const [selectedCaption, setSelectedCaption] = useState(null);
     const [roundOutcome, setRoundOutcome] = useState('');
@@ -18,6 +17,8 @@ const GameGuest = () => {
     const [loading, setLoading] = useState(true);
     const [reloadGame, setReloadGame] = useState(false);
     const [timerRunning, setTimerRunning] = useState(true);
+    const [rounds, setRounds] = useState(0);
+    const [choices, setChoices] = useState([]);
 
     useEffect(() => {
         const fetchMemeAndCaptions = async () => {
@@ -29,7 +30,6 @@ const GameGuest = () => {
                 setCaptions(captions);
                 setSelectedCaption(null);
                 setRoundOutcome('');
-                setScore(0);
                 setLoading(false);
             } catch (error) {
                 console.error('Errore nel caricare il meme e le didascalie:', error);
@@ -48,17 +48,32 @@ const GameGuest = () => {
     // Function to handle the confirm caption button
     const handleConfirmCaption = () => {
         if (selectedCaption) {
-            setRoundOutcome(selectedCaption.correct ? 'Caption corretta! Hai totalizzato 5 punti"' : 'Caption sbagliata! Hai totalizzato 0 punti');
-            setScore(selectedCaption.correct ? 5 : 0);
-            setShowModal(true);
-            setTimerRunning(false);
-        }
+            //add meme, selected caption, and if it's correct to the choices array
+            setChoices(choices => [...choices, { meme: meme, caption: selectedCaption, correct: selectedCaption.correct, points: selectedCaption.correct ? 5 : 0 }]);
+            if (rounds === 2) {
+                setScore(prevScore => selectedCaption.correct ? prevScore + 5 : prevScore);
+                setRoundOutcome(`Hai totalizzato ${score} punti`);
+                setShowModal(true);
+                setTimerRunning(false);
+            } else if (rounds < 2) {
+                setRoundOutcome(selectedCaption.correct ? 'Corretto!' : 'Sbagliato!');
+                setScore(prevScore => selectedCaption.correct ? prevScore + 5 : prevScore);
+                setShowModal(true);
+                setTimerRunning(false);
+            }
+        };
     };
 
     // Function to handle the go home button
     const handleGoHome = () => {
         setTimerRunning(false);
         navigate("/");
+    };
+
+    const handleNextRound = () => {
+        setTimerRunning(true);
+        setRounds(prevRounds => prevRounds + 1);
+        setReloadGame(prevState => !prevState);
     };
 
     // Function to handle the play again button
@@ -71,6 +86,11 @@ const GameGuest = () => {
 
     // Function to handle the timer expired event
     const handleTimerExpired = () => {
+        if (rounds === 3) {
+            setRoundOutcome(`Tempo scaduto! Hai totalizzato ${score} punti`);
+            setShowModal(true);
+            return;
+        }
         setRoundOutcome('Tempo scaduto! Hai totalizzato 0 punti');
         setShowModal(true);
     };
@@ -126,10 +146,12 @@ const GameGuest = () => {
                 handleClose={() => handlePlayAgain()}
                 roundOutcome={roundOutcome}
                 onPlayAgain={handlePlayAgain}
+                onPlayNextRound={handleNextRound}
+                rounds={rounds}
                 onGoHome={handleGoHome}
             />
         </div>
     );
 };
 
-export default GameGuest;
+export default AuthenticatedGame;

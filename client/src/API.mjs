@@ -18,13 +18,33 @@ const getMeme = async () => {
 // Captions functions
 const getCaptions = async (memeId) => {
     const response = await fetch(`${SERVER_URL}/captions/meme/${memeId}`);
-    if(response.ok) {
-      const captionsJson = await response.json();
-      return captionsJson.map(cap => new Caption(cap.id, cap.text, cap.correct));
+    if (response.ok) {
+        const captionsJson = await response.json();
+        return captionsJson.map(cap => new Caption(cap.id, cap.text, cap.correct));
     }
     else
-      throw new Error('Internal server error');
-  }
+        throw new Error('Internal server error');
+}
+
+
+// History functions
+const saveGame = async (user, game) => {
+    const response = await fetch(SERVER_URL + '/games', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user: user, game: game }),
+    });
+    if (response.ok) {
+        const game = await response.json();
+        return game;
+    }
+    else {
+        const errDetails = await response.text();
+        throw errDetails;
+    }
+}
 
 // Login functions
 const logIn = async (credentials) => {
@@ -67,5 +87,5 @@ const logOut = async () => {
         return null;
 }
 
-const API = { getMeme, getCaptions, logIn, logOut, getUserInfo };
+const API = { getMeme, getCaptions, saveGame, logIn, logOut, getUserInfo };
 export default API;
