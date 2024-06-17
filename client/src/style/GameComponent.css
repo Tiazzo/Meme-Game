@@ -38,21 +38,19 @@
     margin-bottom: 10px; /* Spazio tra le righe di didascalie */
 }
 
-.captionButton {
-    margin: 5px; /* Distanza tra i pulsanti delle didascalie */
-    padding: 10px 20px; /* Padding per spaziatura interna */
-    border-radius: 30px; /* Bordo rotondo */
-    white-space: nowrap; /* Impedisce al testo di andare a capo */
-    transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Transizione per il cambio colore */
+.captionsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
-.captionButton:hover {
-    background-color: #f0f0f0; /* Cambia il colore di sfondo al passaggio del mouse */
-    border-color: #ccc; /* Cambia il colore del bordo al passaggio del mouse */
+.captionDropdown {
+    width: 300px;
+    margin: 20px 0;
 }
 
-.captionButton.active {
-    background-color: #007bff; /* Colore di sfondo attivo */
-    border-color: #007bff; /* Colore del bordo attivo */
-    color: white; /* Colore del testo attivo */
+.captionOption {
+    text-align: center;
 }
+

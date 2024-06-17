@@ -5,8 +5,11 @@ const CountdownTimer = (props) => {
     const [seconds, setSeconds] = useState(props.initialSeconds);
 
     useEffect(() => {
-        // Exit early if countdown is finished
-        if (seconds <= 0) {
+        // Exit early if countdown is finished or timerRunning is false
+        if (!props.timerRunning || seconds <= 0) {
+            if (seconds <= 0) {
+                props.onTimerExpired(); // Call the callback function provided by the parent component
+            }
             return;
         }
 
@@ -17,7 +20,7 @@ const CountdownTimer = (props) => {
 
         // Clean up the timer
         return () => clearInterval(timer);
-    }, [seconds]);
+    }, [props, seconds]);
 
     const formatTime = (timeInSeconds) => {
         const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
@@ -30,7 +33,8 @@ const CountdownTimer = (props) => {
 
     return (
         <div>
-            <h3 style={{ color: seconds <= 10 ? 'red' : 'black' }}>{formatTime(seconds)}</h3>            <ProgressBar
+            <h3 style={{ color: seconds <= 10 ? 'red' : 'black' }}>{formatTime(seconds)}</h3>
+            <ProgressBar
                 now={calculateProgress()}
                 variant={seconds <= 10 ? 'danger' : 'primary'}
             />

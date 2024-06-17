@@ -7,9 +7,7 @@ const getMeme = async () => {
     const response = await fetch(SERVER_URL + '/memes');
     if (response.ok) {
         const memeJson = await response.json();
-        console.log(memeJson);
         const meme = new Meme(memeJson.id, memeJson.url, memeJson.used);
-        console.log("API " + meme.id + " " + meme.memeUrl + " " + meme.used);
         return meme
     }
     else
