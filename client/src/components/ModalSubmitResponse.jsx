@@ -2,15 +2,6 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 function ModalSubmitResponse(props) {
-    const handleGoHome = () => {
-        props.onHide(); // Chiudi il modale
-        props.onGoHome(); // Vai alla home
-    };
-
-    const handlePlayAgain = () => {
-        props.onHide(); // Chiudi il modale
-        props.onPlayAgain(); // Ripeti il gioco
-    };
     return (
         
         <Modal
@@ -20,7 +11,7 @@ function ModalSubmitResponse(props) {
             keyboard={false}
         >
             <Modal.Header closeButton>
-                <Modal.Title>Round recap</Modal.Title>
+                <Modal.Title>Round terminato</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {props.roundOutcome}
