@@ -1,5 +1,7 @@
 import { Meme } from './model/Meme.mjs';
 import { Caption } from './model/Caption.mjs';
+import {Game} from './model/Game.mjs';
+
 const SERVER_URL = 'http://localhost:3001/api';
 
 // Meme functions
@@ -42,13 +44,25 @@ const saveGame = async (user, game) => {
             const errDetails = await response.text();
             throw new Error(`Errore dal server: ${errDetails}`);
         }
-        const gameData = await response.json();;
+        const gameData = await response.json();
         return gameData;
     } catch (error) {
         console.error("Errore nel salvataggio del gioco:", error);
         throw error;
     }
 };
+
+// Game History functions
+const getGameHistory = async (username) => {
+    const response = await fetch(`${SERVER_URL}/games/history/${username}`);
+    if (response.ok) {
+        const gamesJson = await response.json();
+        return gamesJson.map(game => new Game(game.username, game.game_id, game.round, game.caption, game.caption_id, game.meme_id, game.image, game.correct, game.score, game.date));
+    }
+    else
+        throw new Error('Internal server error');
+}
+
 
 // Login functions
 const logIn = async (credentials) => {
@@ -91,5 +105,5 @@ const logOut = async () => {
         return null;
 }
 
-const API = { getMeme, getCaptions, saveGame, logIn, logOut, getUserInfo };
+const API = { getMeme, getCaptions, saveGame, logIn, logOut, getUserInfo, getGameHistory};
 export default API;

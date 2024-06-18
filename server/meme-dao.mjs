@@ -1,6 +1,7 @@
 /* Data Access Object (DAO) module for accessing Meme */
 import { Meme } from './models/meme.mjs';
 import { Caption } from './models/caption.mjs';
+import { Game } from './models/game.mjs';
 import { MemeCaption } from './models/meme-caption.mjs';
 import { db } from './db.mjs';
 import dayjs from 'dayjs';
@@ -201,6 +202,22 @@ export const insertGameResult = async (username, game) => {
         throw err;
     }
 };
+
+// Retrieve game history of the user
+export const getHistoryGame = (username) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM game_history WHERE username = ?';
+        db.all(sql, [username], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                const games = rows.map(row => new Game(row.username, row.game_id, row.round, row.caption, row.caption_id, row.meme_id, row.image, row.correct, row.score, row.date));
+                resolve(games);
+            }
+        });
+    });
+};
+
 
 // Check if caption is associated with meme
 export const checkMemeCaption = (captionId, memeId) => {

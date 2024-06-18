@@ -8,7 +8,8 @@ const GameHistory = () => {
     useEffect(() => {
         const fetchGameHistory = async () => {
             try {
-                const gameHistory = await API.getGameHistory();
+                const gameHistory = await API.getGameHistory("mattia.carlino@polito.it");
+                console.log(gameHistory);
                 setGames(gameHistory);
             } catch (error) {
                 console.error('Errore nel recuperare lo storico delle partite:', error);
@@ -24,36 +25,31 @@ const GameHistory = () => {
             {games.length === 0 ? (
                 <p>Nessuna partita trovata.</p>
             ) : (
-                games.map((game, index) => (
-                    <div key={index} className="my-4">
-                        <h2>Partita {index + 1}</h2>
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>Round</th>
-                                    <th>Immagine Meme</th>
-                                    <th>Punteggio Round</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {game.rounds.map((round, roundIndex) => (
-                                    <tr key={roundIndex}>
-                                        <td>{roundIndex + 1}</td>
-                                        <td>
-                                            <img
-                                                src={`http://localhost:3001/public/images/${round.meme.memeUrl}`}
-                                                alt={`Meme Round ${roundIndex + 1}`}
-                                                style={{ maxWidth: '150px', maxHeight: '150px' }}
-                                            />
-                                        </td>
-                                        <td>{round.points}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                        <p>Punteggio Totale: {game.totalScore}</p>
-                    </div>
-                ))
+                <Table striped bordered hover responsive>
+                    <thead>
+                        <tr>
+                            <th>Partita</th>
+                            <th>Round</th>
+                            <th>Immagine</th>
+                            <th>Didascalia</th>
+                            <th>Punteggio</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {games.map((game, index) => (
+                            <tr key={index}>
+                                <td>{game.game_id}</td>
+                                <td>{game.round}</td>
+                                <td>
+                                    <img src={`http://localhost:3001/public/images/${game.image}`} alt="Meme" style={{ width: '100px' }} /></td>
+                                <td>{game.caption}</td>
+                                <td>{game.score}</td>
+                                <td>{game.date}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
             )}
         </Container>
     );

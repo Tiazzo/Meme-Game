@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { check, validationResult } from 'express-validator';
 import { getUser } from './user-dao.mjs';
-import { getMemeById, getRandomMeme, getRandomCaptions, restoreUsedMeme, getCaptionById, checkMemeCaption, insertGameResult } from './meme-dao.mjs';
+import { getMemeById, getRandomMeme, getRandomCaptions, restoreUsedMeme, getCaptionById, checkMemeCaption, insertGameResult, getHistoryGame } from './meme-dao.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import passport from 'passport';
@@ -153,6 +153,14 @@ app.post('/api/games', async (req, res) => {
     } catch (error) {
         res.status(503).json({ error: `Database error during the saving of game: ${err}` });
     }
+});
+
+// GET /api/games/history/:username
+app.get('/api/games/history/:username', (request, response) => {
+    const username = request.params.username;
+    getHistoryGame(username)
+        .then(result => response.json(result))
+        .catch(() => response.status(500).end());
 });
 
 
