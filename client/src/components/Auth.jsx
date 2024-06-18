@@ -31,13 +31,6 @@ function LoginForm(props) {
 
     return (
         <Container className="login-container">
-            <Row className="justify-content-center w-100">
-                <Col md={12} className="text-center mb-4">
-                    <Link to="/" className="login-title">
-                        <h1><span style={{ color: 'red' }}>What Do You Meme</span></h1>
-                    </Link>
-                </Col>
-            </Row>
             <Row className="justify-content-center align-items-center w-100">
                 <Col md={4} className="d-none d-md-block">
                     <Image src="dudes-young-man-giving-a-presentation-about-something.png" fluid />
