@@ -7,7 +7,6 @@ import dayjs from 'dayjs';
 // Retrieve all memes
 export const getAllMemes = () => {
     return new Promise((resolve, reject) => {
-        console.log('getAllMemes');
         const sql = 'SELECT * FROM meme';
         db.all(sql, [], (err, rows) => {
             if (err) {
@@ -45,12 +44,10 @@ export const getMemeById = (id) => {
 export const getRandomMeme = () => {
     return new Promise((resolve, reject) => {
         const sql = 'SELECT * FROM meme WHERE used = 0 ORDER BY RANDOM() LIMIT 1';
-        console.log("eccomi");
         db.get(sql, [], (err, row) => {
             if (err) {
                 reject(err);
             }
-            console.log(row);
             const meme = new Meme(row.id, row.meme_url, 1);
             // Mark meme as used
             // const sql = 'UPDATE meme SET used = 1 WHERE id = ?';
@@ -154,11 +151,9 @@ export const getCaptionById = (id) => {
                 reject(err);
             }
             else if (!row) {
-                console.log("Caption not found");
                 resolve({ error: 'Caption not found' });
             }
             else {
-                console.log(row);
                 const caption = new Caption(row.id, row.text);
                 resolve(caption);
             }
@@ -169,13 +164,13 @@ export const getCaptionById = (id) => {
 // Retrieve the last id of the game of the user
 export const getLastGameId = (username) => {
     return new Promise((resolve, reject) => {
-        const sql = 'SELECT MAX(id) as id FROM game_history WHERE username = ?';
+        const sql = 'SELECT MAX(game_id) as game_id FROM game_history WHERE username = ?';
         db.get(sql, [username], (err, row) => {
             if (err) {
+                console.error('Errore nel recupero dell\'ultimo id della partita:', err);
                 reject(err);
-            }
-            else {
-                row ? id = row.id : id = 0;
+            } else {
+                let id = row ? row.game_id + 1 : 1;
                 resolve(id);
             }
         });
@@ -183,18 +178,28 @@ export const getLastGameId = (username) => {
 };
 
 // Insert game result into database
-export const insertGameResult = (username, game) => {
-    return new Promise((resolve, reject) => {
-        id = getLastGameId(username);
-        for (const choice of game) {
-            const sql = 'INSERT INTO game_history (username, game_id, round, caption, caption_id, meme_id, image, correct, score, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            db.run(sql, [username, id, choice.index, choice.caption.id, choice.caption.text, choice.meme.id, choice.meme.url, choice.correct, choice.points, da], function (err) {
-                if (err) {
-                    reject(err);
-                }
+export const insertGameResult = async (username, game) => {
+    try {
+        const id = await getLastGameId(username);
+        const sql = 'INSERT INTO game_history (username, game_id, round, caption_id, caption, meme_id, image, correct, score, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+        for (let i = 0; i < game.length; i++) {
+            const { meme, caption, correct, points, round } = game[i];            
+            await new Promise((resolve, reject) => {
+                db.run(sql, [username, id, round, caption.id, caption.text, meme.id, meme.memeUrl, correct? 1 : 0, points, dayjs().format("DD-MM-YYYY")], function (err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(true);
+                    }
+                });
             });
         }
-    });
+        return true;
+    } catch (err) {
+        console.error('Errore nell\'inserimento del risultato della partita:', err);
+        throw err;
+    }
 };
 
 // Check if caption is associated with meme

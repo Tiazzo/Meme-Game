@@ -77,7 +77,6 @@ app.get('/api/memes', (request, response) => {
 // Retrieve a meme by id
 app.get('/api/memes/:id', (request, response) => {
     const id = request.params.id;
-    console.log("id: " + id);
     getMemeById(id)
         .then(meme => {
             if (meme.error)
@@ -136,11 +135,24 @@ app.get('/api/captions/:captionId/meme/:memeId', (request, response) => {
 });
 
 /*********************** History **************************/
-app.post('/api/games', (request, response) => {
-    const game = request.body;
-    insertGameResult(user, game)
-        .then(game => response.status(201).json(game))
-        .catch(() => response.status(500).end());
+app.post('/api/games', async (req, res) => {
+    const invalidFields = validationResult(req);
+
+    if (!invalidFields.isEmpty()) {
+        return onValidationErrors(invalidFields, res);
+    }
+
+    const user = req.body.user;
+    const game = req.body.game;
+    if (!user || !game) {
+        return res.status(400).json({ error: 'User and game data are required' });
+    }
+    try {
+        const result = await insertGameResult(user, game);
+        res.json(result);
+    } catch (error) {
+        res.status(503).json({ error: `Database error during the saving of game: ${err}` });
+    }
 });
 
 

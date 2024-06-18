@@ -26,9 +26,9 @@ function ModalSubmitResponse(props) {
                 {props.isLoggedIn && props.rounds === 3 && (
                     <div>
                         <p style={{ marginBottom: '5px' }}>
-                            Hai totalizzato <strong style={{ color: 'green' }}>{props.score} punti</strong> in questa partita!
+                        Hai totalizzato <strong style={{ color: props.score === 0 ? 'red' : 'green' }}>{props.score} punti</strong> in questa partita!
                         </p>
-                        <p>Risposte corrette:</p>
+                        <p>Risposte corrette: {correctCaptions.length === 0 ? "Nessuna" : null}</p>
                     </div>
                 )}
                 {props.isLoggedIn && props.rounds === 3 && correctCaptions.map((item, index) => (

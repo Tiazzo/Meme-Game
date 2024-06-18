@@ -29,22 +29,26 @@ const getCaptions = async (memeId) => {
 
 // History functions
 const saveGame = async (user, game) => {
-    const response = await fetch(SERVER_URL + '/games', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ user: user, game: game }),
-    });
-    if (response.ok) {
-        const game = await response.json();
-        return game;
+    try {
+        const response = await fetch(SERVER_URL + '/games', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user: user, game: game }),
+        });
+
+        if (!response.ok) {
+            const errDetails = await response.text();
+            throw new Error(`Errore dal server: ${errDetails}`);
+        }
+        const gameData = await response.json();;
+        return gameData;
+    } catch (error) {
+        console.error("Errore nel salvataggio del gioco:", error);
+        throw error;
     }
-    else {
-        const errDetails = await response.text();
-        throw errDetails;
-    }
-}
+};
 
 // Login functions
 const logIn = async (credentials) => {
