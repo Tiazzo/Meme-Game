@@ -16,18 +16,22 @@ function LoginForm(props) {
     const handleSubmit = (event) => {
         event.preventDefault();
         const credentials = { username, password };
-
         props.login(credentials)
-            .then(() => navigate("/game"))
-            .catch((err) => {
-                if (err.message === "Unauthorized")
+            .then((user) => {
+                if (user) {
+                    setErrorMessage(''); // Reset error message
+                    setShow(false);      // Hide alert
+                    navigate("/game");   // Navigate only if login is successful
+                } else {
                     setErrorMessage("Invalid username and/or password");
-                else
-                    setErrorMessage(err.message);
+                    setShow(true);
+                }
+            })
+            .catch((err) => {
+                setErrorMessage(err.message);
                 setShow(true);
             });
     };
-
 
     return (
         <Container className="login-container">

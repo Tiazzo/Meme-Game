@@ -3,45 +3,44 @@ import crypto from 'crypto';
 
 // Retrieve a user from the database
 export const getUser = (email, password) => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM User WHERE email = ?';
-        db.get(sql, [email], (err, row) => {
-            if (err) {
-                reject(err);
-            }
-            else if (row === undefined) {
-                resolve(false);
-            }
-            else {
-                const user = { email: row.email, username: row.username };
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM user WHERE email = ?';
+    db.get(sql, [email], (err, row) => {
+      if (err) {
+        reject(err);
+      }
+      else if (row === undefined) {
+        resolve(false);
+      }
+      else {
+        const user = { id: row.id, username: row.email, name: row.name };
 
-                crypto.scrypt(password, row.salt, 32, function (err, hashedPassword) {
-                    if (err) reject(err);
-                    if (!crypto.timingSafeEqual(Buffer.from(row.password, 'hex'), hashedPassword))
-                        resolve(false);
-                    else
-                        resolve(user);
-                });
-            }
+        crypto.scrypt(password, row.salt, 32, function (err, hashedPassword) {
+          if (err) reject(err);
+          if (!crypto.timingSafeEqual(Buffer.from(row.password, 'hex'), hashedPassword))
+            resolve(false);
+          else
+            resolve(user);
         });
+      }
     });
+  });
 };
 
-// Retrieve a user from the database by email
-export const getUserByEmail = (email) => {
-    return new Promise((resolve, reject) => {
-      const sql = 'SELECT * FROM user WHERE email = ?';
-      db.get(sql, [email], (err, row) => {
-        if (err) { 
-          reject(err); 
-        }
-        else if (row === undefined) { 
-          resolve({error: 'User not found!'}); 
-        }
-        else {
-          const user = {email: row.email, username: row.username};
-          resolve(user);
-        }
-      });
+export const getUserById = (id) => {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM user WHERE id = ?';
+    db.get(sql, [id], (err, row) => {
+      if (err) {
+        reject(err);
+      }
+      else if (row === undefined) {
+        resolve({ error: 'User not found!' });
+      }
+      else {
+        const user = { id: row.id, username: row.email, name: row.name };
+        resolve(user);
+      }
     });
-  };
+  });
+};

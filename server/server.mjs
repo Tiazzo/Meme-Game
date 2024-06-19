@@ -29,6 +29,7 @@ app.use(cors(corsOptions));
 
 // Passport: set up local strategy
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
+    console.log('Verifying user', username);
     const user = await getUser(username, password);
     if (!user)
         return cb(null, false, 'Incorrect username or password.');
@@ -37,10 +38,12 @@ passport.use(new LocalStrategy(async function verify(username, password, cb) {
 }));
 
 passport.serializeUser(function (user, cb) {
+    console.log('Serializing user', user);
     cb(null, user);
 });
 
 passport.deserializeUser(function (user, cb) { // this user is id + email + name
+    console.log('Deserializing user', user);
     return cb(null, user);
 });
 
@@ -52,7 +55,7 @@ const isLoggedIn = (req, res, next) => {
 }
 
 app.use(session({
-    secret: "shhhhh... it's a secret!",
+    secret: "jsksfibala",
     resave: false,
     saveUninitialized: false,
 }));
@@ -167,7 +170,9 @@ app.get('/api/games/history/:username', (request, response) => {
 /*********************** SESSIONS **************************/
 // POST /api/sessions
 app.post('/api/sessions', function (req, res, next) {
+    console.log('Logging in user', req.body);
     passport.authenticate('local', (err, user, info) => {
+        console.log('Authenticating user', user);
         if (err)
             return next(err);
         if (!user) {
@@ -188,6 +193,7 @@ app.post('/api/sessions', function (req, res, next) {
 // GET /api/sessions/current
 app.get('/api/sessions/current', (req, res) => {
     if (req.isAuthenticated()) {
+        console.log("eccomi")
         res.json(req.user);
     }
     else

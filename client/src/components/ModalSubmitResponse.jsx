@@ -15,7 +15,7 @@ function ModalSubmitResponse(props) {
         >
             <Modal.Header closeButton>
                 <Modal.Title>
-                    {props.isLoggedIn
+                    {props.loggedIn
                         ? (props.rounds < 3 ? `Fine del round ${props.rounds}` : "Fine della partita")
                         : "Fine della partita"
                     }
@@ -23,7 +23,7 @@ function ModalSubmitResponse(props) {
             </Modal.Header>
             <Modal.Body>
                 <p>{props.roundOutcome}</p>
-                {props.isLoggedIn && props.rounds === 3 && (
+                {props.loggedIn && props.rounds === 3 && (
                     <div>
                         <p style={{ marginBottom: '5px' }}>
                         Hai totalizzato <strong style={{ color: props.score === 0 ? 'red' : 'green' }}>{props.score} punti</strong> in questa partita!
@@ -31,7 +31,7 @@ function ModalSubmitResponse(props) {
                         <p>Risposte corrette: {correctCaptions.length === 0 ? "Nessuna" : null}</p>
                     </div>
                 )}
-                {props.isLoggedIn && props.rounds === 3 && correctCaptions.map((item, index) => (
+                {props.loggedIn && props.rounds === 3 && correctCaptions.map((item, index) => (
                     <div key={index} className="selected-caption">
                         <Image
                             src={`http://localhost:3001/public/images/${item.meme.memeUrl}`}
@@ -48,11 +48,11 @@ function ModalSubmitResponse(props) {
                     Torna alla Home
                 </Button>
                 <Button variant="primary" onClick={
-                    props.isLoggedIn ?
+                    props.loggedIn ?
                         (props.rounds < 3 ? props.onPlayNextRound : props.onPlayAgain)
                         : props.onPlayAgain
                 }>
-                    {props.isLoggedIn
+                    {props.loggedIn
                         ? (props.rounds < 3 ? "Prossimo round" : "Gioca di nuovo")
                         : "Gioca di nuovo"
                     }

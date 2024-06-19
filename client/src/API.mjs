@@ -66,38 +66,40 @@ const getGameHistory = async (username) => {
 
 // Login functions
 const logIn = async (credentials) => {
-    const response = await fetch(SERVER_URL + '/api/sessions', {
+    console.log(credentials);
+    const response = await fetch(SERVER_URL + '/sessions', {
         method: 'POST',
-        'Content-Type': 'application/json',
         headers: {
+            'Content-Type': 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify(credentials),
     });
+    console.log(response);
     if (response.ok) {
         const user = await response.json();
         return user;
-    }
-    else {
+    } else {
         const errDetails = await response.text();
         throw errDetails;
     }
 };
 
 const getUserInfo = async () => {
-    const response = await fetch(SERVER_URL + '/api/sessions/current', {
-        credentials: 'include',
+    const response = await fetch(SERVER_URL + '/sessions/current', {
+      credentials: 'include',
     });
     const user = await response.json();
     if (response.ok) {
-        return user;
+      return user;
     } else {
-        throw user;  // an object with the error coming from the server
+        console.error(user);
+      throw user;  // an object with the error coming from the server
     }
-};
+  };
 
 const logOut = async () => {
-    const response = await fetch(SERVER_URL + '/api/sessions/current', {
+    const response = await fetch(SERVER_URL + '/sessions/current', {
         method: 'DELETE',
         credentials: 'include'
     });

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Col, Container, Row, Form, Image } from "react-bootstrap/";
+import { Col, Container, Row, Image } from "react-bootstrap/";
 import { LogoutButton, LoginButton } from './Auth';
 import { useLocation } from "react-router-dom";
 
@@ -19,7 +19,7 @@ function Header(props) {
                         </a>
                     </Col>
                     <Col xs={12} md={4} className="d-flex justify-content-center justify-content-md-end">
-                        {props.isLoggedIn ? (
+                        {props.loggedIn ? (
                             <LogoutButton logout={props.logout} />
                         ) : (
                             !hideLoginButton && <LoginButton />
@@ -33,7 +33,7 @@ function Header(props) {
 
 Header.propTypes = {
     logout: PropTypes.func.isRequired,
-    isLoggedIn: PropTypes.bool.isRequired,
+    loggedIn: PropTypes.bool.isRequired,
 }
 
 export default Header;

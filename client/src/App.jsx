@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Card from './components/Card'
 import { LoginForm } from './components/Auth'
-import { Routes, Route, Navigate, Link } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import API from "./API.mjs";
 import NotFoundComponent from './components/NotFoundComponent';
 import { GameHistory } from './components/GameHistory';
@@ -13,11 +13,12 @@ import Home from './components/Home';
 function App() {
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState('');
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
-      const user = await API.getUserInfo();
+      const user = await API.getUserInfo(); // we have the user info here
       setLoggedIn(true);
       setUser(user);
     };
@@ -31,6 +32,7 @@ function App() {
   const handleLogin = async (credentials) => {
     try {
       const user = await API.logIn(credentials);
+      console.log(user);
       setLoggedIn(true);
       setMessage({ msg: `Welcome, ${user.name}!`, type: 'success' });
       setUser(user);
@@ -46,10 +48,13 @@ function App() {
     await API.logOut();
     setLoggedIn(false);
     setMessage('');
+    setUser(null);
+    navigate('/');  // Naviga alla route index ("/")
   };
+
   return (
     <div className="min-vh-100 d-flex flex-column">
-      <Header logout={handleLogout} user={user} isLoggedIn={true} />
+      <Header loggedIn={loggedIn} logout={handleLogout} />
       <Container fluid className="flex-grow-1 d-flex flex-column">
         <Routes>
           <Route index element={<Home loggedIn={loggedIn} />} />
@@ -57,7 +62,7 @@ function App() {
           <Route path='/login' element={
             loggedIn ? <Navigate replace to='/game' /> : <LoginForm login={handleLogin} />
           } />
-          <Route path="/game" element={<Game isLoggedIn={true} />} />
+          <Route path="/game" element={<Game loggedIn={loggedIn} />} />
           <Route path="/game-history" element={<GameHistory />} />
         </Routes>
       </Container>

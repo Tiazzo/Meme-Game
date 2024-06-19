@@ -61,7 +61,7 @@ const Game = (props) => {
             const newChoice = { meme: meme, caption: selectedCaption, correct: selectedCaption.correct, points: selectedCaption.correct ? 5 : 0, round: rounds };
             const updatedChoices = [...choices, newChoice];
 
-            if (props.isLoggedIn) {
+            if (props.loggedIn) {
                 setRoundOutcome(selectedCaption.correct ? 'Caption corretta! +5 punti' : 'Caption sbagliata! 0 punti');
                 setScore(prevScore => selectedCaption.correct ? prevScore + 5 : prevScore);
                 setChoices(updatedChoices);
@@ -176,7 +176,7 @@ const Game = (props) => {
                 rounds={rounds}
                 onGoHome={handleGoHome}
                 score={score}
-                isLoggedIn={props.isLoggedIn}
+                loggedIn={props.loggedIn}
                 selectedCaptions={choices}
             />
         </div>

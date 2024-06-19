@@ -1,7 +1,7 @@
-import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Card from './Card';
+import PropTypes from 'prop-types';
 
 const Home = (props) => {
   return (
@@ -41,6 +41,11 @@ const Home = (props) => {
       )}
     </Container>
   );
+}
+
+//Props validation
+Home.propTypes = {
+  loggedIn: PropTypes.bool.isRequired
 }
 
 export default Home;
