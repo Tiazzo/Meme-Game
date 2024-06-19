@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import API from '../API.mjs';
 
@@ -19,37 +19,56 @@ const GameHistory = () => {
         fetchGameHistory();
     }, []);
 
+    // Raggruppo i round per partita
+    const groupedGames = games.reduce((acc, game) => {
+        const gameId = game.game_id;
+        if (!acc[gameId]) {
+            acc[gameId] = [];
+        }
+        acc[gameId].push(game);
+        return acc;
+    }, {});
+
     return (
         <Container className="mt-4">
             <h1>Storico delle Partite</h1>
             {games.length === 0 ? (
                 <p>Nessuna partita trovata.</p>
             ) : (
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>Partita</th>
-                            <th>Round</th>
-                            <th>Immagine</th>
-                            <th>Didascalia</th>
-                            <th>Punteggio</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {games.map((game, index) => (
-                            <tr key={index}>
-                                <td>{game.game_id}</td>
-                                <td>{game.round}</td>
-                                <td>
-                                    <img src={`http://localhost:3001/public/images/${game.image}`} alt="Meme" style={{ width: '100px' }} /></td>
-                                <td>{game.caption}</td>
-                                <td>{game.score}</td>
-                                <td>{game.date}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                Object.keys(groupedGames).map((gameId) => {
+                    const gameRounds = groupedGames[gameId];
+                    const totalScore = gameRounds.reduce((sum, round) => sum + round.score, 0);
+                    const gameDate = gameRounds[0].date; // Ottieni la data dal primo round
+
+                    return (
+                        <div key={gameId} className="mb-4">
+                            <h2>Partita numero {gameId}, giocata il {gameDate}</h2>
+                            <p>Punteggio partita: {totalScore}</p>
+                            <Table striped bordered hover responsive>
+                                <thead>
+                                    <tr>
+                                        <th>Round</th>
+                                        <th>Meme</th>
+                                        <th>Caption</th>
+                                        <th>Punteggio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {gameRounds.map((round, index) => (
+                                        <tr key={index}>
+                                            <td>{round.round}</td>
+                                            <td>
+                                                <img src={`http://localhost:3001/public/images/${round.image}`} alt="Meme" style={{ width: '100px' }} />
+                                            </td>
+                                            <td>{round.caption}</td>
+                                            <td>{round.score}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </div>
+                    );
+                })
             )}
         </Container>
     );
