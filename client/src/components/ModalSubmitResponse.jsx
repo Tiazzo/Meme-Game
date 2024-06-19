@@ -23,10 +23,20 @@ function ModalSubmitResponse(props) {
             </Modal.Header>
             <Modal.Body>
                 <p>{props.roundOutcome}</p>
+                {!props.selectedCaption?.correct && (
+                    <div>
+                        <p>Captions corrette:</p>
+                        <ul>
+                            {props.correctCaptions.map((item, index) => (
+                                <li key={index}>{item.text}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
                 {props.loggedIn && props.rounds === 3 && (
                     <div>
                         <p style={{ marginBottom: '5px' }}>
-                        Hai totalizzato <strong style={{ color: props.score === 0 ? 'red' : 'green' }}>{props.score} punti</strong> in questa partita!
+                            Hai totalizzato <strong style={{ color: props.score === 0 ? 'red' : 'green' }}>{props.score} punti</strong> in questa partita!
                         </p>
                         <p>Risposte corrette: {correctCaptions.length === 0 ? "Nessuna" : null}</p>
                     </div>

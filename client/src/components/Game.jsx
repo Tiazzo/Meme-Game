@@ -178,6 +178,8 @@ const Game = (props) => {
                 score={score}
                 loggedIn={props.loggedIn}
                 selectedCaptions={choices}
+                selectedCaption={selectedCaption}
+                correctCaptions={captions.filter(item => item.correct)}
             />
         </div>
     );
