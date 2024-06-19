@@ -38,8 +38,7 @@ const GameHistory = () => {
                 Object.keys(groupedGames).map((gameId) => {
                     const gameRounds = groupedGames[gameId];
                     const totalScore = gameRounds.reduce((sum, round) => sum + round.score, 0);
-                    const gameDate = gameRounds[0].date; // Ottieni la data dal primo round
-
+                    const gameDate = gameRounds[0].date;
                     return (
                         <div key={gameId} className="mb-4">
                             <h2>Partita numero {gameId}, giocata il {gameDate}</h2>
@@ -74,4 +73,4 @@ const GameHistory = () => {
     );
 };
 
-export default GameHistory;
+export { GameHistory };
