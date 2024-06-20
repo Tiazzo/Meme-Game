@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import Card from './components/Card'
 import { LoginForm } from './components/Auth'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import API from "./API.mjs";
 import NotFoundComponent from './components/NotFoundComponent';
 import { GameHistory } from './components/GameHistory';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import Header from './components/Header';
 import Game from './components/Game';
 import Home from './components/Home';

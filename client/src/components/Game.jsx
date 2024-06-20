@@ -184,4 +184,9 @@ const Game = (props) => {
     );
 };
 
+Game.propTypes = {
+    loggedIn: PropTypes.bool.isRequired,
+    user: PropTypes.object
+};
+
 export default Game;
