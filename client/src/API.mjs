@@ -27,7 +27,6 @@ const restoreMeme = async () => {
         if (!response.ok) {
             throw new Error('Errore nel reset del meme');
         }
-        console.log('Meme resettato con successo');
     } catch (error) {
         console.error('Errore nel reset del meme:', error);
         throw error;
@@ -51,7 +50,6 @@ const getCaptions = async (memeId) => {
 // History functions
 const saveGame = async (user, game) => {
     try {
-        console.log("saving");
         const response = await fetch(SERVER_URL + '/games', {
             method: 'POST',
             headers: {

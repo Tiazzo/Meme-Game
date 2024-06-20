@@ -20,6 +20,19 @@ const Game = (props) => {
     const [timerRunning, setTimerRunning] = useState(true);
     const [rounds, setRounds] = useState(1);
     const [choices, setChoices] = useState([]);
+    const [endGame, setEndGame] = useState(false);
+
+    useEffect(() => {
+        const restoreMemeDB = async () => {
+            try {
+                await API.restoreMeme();
+            } catch (error) {
+                console.error('Errore nel ripristino del meme:', error);
+            }
+        };
+
+        restoreMemeDB();
+    }, []); 
 
     useEffect(() => {
         // Flag to track if the component is mounted
@@ -50,6 +63,21 @@ const Game = (props) => {
         };
     }, [reloadGame]);
 
+    useEffect(() => {
+        if (endGame) {
+            const restoreMemeDB = async () => {
+                try {
+                    await API.restoreMeme();
+                } catch (error) {
+                    console.error('Errore nel ripristino del meme:', error);
+                }
+            };
+
+            restoreMemeDB();
+            setEndGame(false); // Resetta endGame dopo aver ripristinato il DB
+        }
+    }, [endGame]);
+
     const handleCaptionChange = (e) => {
         const selectedCaptionId = parseInt(e.target.value, 10);
         const selectedCaption = captions.find(caption => caption.id === selectedCaptionId);
@@ -69,11 +97,13 @@ const Game = (props) => {
                 // Save the game into the database after the third round
                 if (rounds === 3) {
                     await saveGameIntoDB(updatedChoices);
+                    setEndGame(true);
                 }
             }
             else {
                 setRoundOutcome(selectedCaption.correct ? 'Caption corretta! Hai totalizzato 5 punti' : 'Caption sbagliata! Hai totalizzato 0 punti');
                 setScore(selectedCaption.correct ? 5 : 0);
+                setEndGame(true); 
             }
             setShowModal(true);
             setTimerRunning(false);
@@ -98,7 +128,7 @@ const Game = (props) => {
     }
 
     const handleGoHome = async () => {
-        await restoreMemeDB();
+        setEndGame(true);
         setTimerRunning(false);
         navigate("/");
     };
@@ -112,7 +142,6 @@ const Game = (props) => {
     };
 
     const handlePlayAgain = async () => {
-        await restoreMemeDB();
         setShowModal(false);
         setLoading(true);
         setTimerRunning(true);
@@ -120,6 +149,7 @@ const Game = (props) => {
         setScore(0);
         setChoices([]);
         setReloadGame(reloadGame => !reloadGame);
+        setEndGame(true);
     };
 
     const handleTimerExpired = () => {
