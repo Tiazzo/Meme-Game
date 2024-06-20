@@ -83,7 +83,7 @@ const Game = (props) => {
     // Function to save the game into the database
     const saveGameIntoDB = async (finalChoices) => {
         try {
-            const saved = await API.saveGame("mattia.carlino@polito.it", finalChoices);
+            const saved = await API.saveGame(props.user, finalChoices);
         } catch (error) {
             console.error('Errore nel salvataggio della partita:', error);
         }
@@ -118,7 +118,6 @@ const Game = (props) => {
 
         setRoundOutcome('Tempo scaduto! Hai totalizzato 0 punti');
         setChoices(updatedChoices);
-        setRounds(rounds => rounds + 1);
         setShowModal(true);
     };
 

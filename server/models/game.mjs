@@ -1,5 +1,5 @@
-function Game(username, game_id, round, caption, caption_id, meme_id, image, correct, score, date){
-    this.username = username;
+function Game(user_id, game_id, round, caption, caption_id, meme_id, image, correct, score, date){
+    this.user_id = user_id;
     this.game_id = game_id;
     this.round = round;
     this.caption = caption;

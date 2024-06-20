@@ -2,22 +2,26 @@ import { useEffect, useState } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import API from '../API.mjs';
 
-const GameHistory = () => {
+const GameHistory = (props) => {
     const [games, setGames] = useState([]);
 
     useEffect(() => {
         const fetchGameHistory = async () => {
             try {
-                const gameHistory = await API.getGameHistory("mattia.carlino@polito.it");
-                console.log(gameHistory);
-                setGames(gameHistory);
+                if (props.user && props.user.id) {
+                    const gameHistory = await API.getGameHistory(props.user.id);
+                    setGames(gameHistory);
+                }
             } catch (error) {
                 console.error('Errore nel recuperare lo storico delle partite:', error);
             }
         };
 
         fetchGameHistory();
-    }, []);
+    }, [props.user]);
+    if (!props.user) {
+        return <p>Caricamento...</p>;
+    }
 
     // Raggruppo i round per partita
     const groupedGames = games.reduce((acc, game) => {
@@ -31,7 +35,7 @@ const GameHistory = () => {
 
     return (
         <Container className="mt-4">
-            <h1>Storico delle Partite</h1>
+            <h1>Ciao {props.user.name}, ecco il tuo storico partite</h1>
             {games.length === 0 ? (
                 <p>Nessuna partita trovata.</p>
             ) : (
@@ -48,7 +52,7 @@ const GameHistory = () => {
                                     <tr>
                                         <th>Round</th>
                                         <th>Meme</th>
-                                        <th>Caption</th>
+                                        <th>Caption selezionata</th>
                                         <th>Punteggio</th>
                                     </tr>
                                 </thead>

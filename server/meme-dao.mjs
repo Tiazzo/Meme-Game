@@ -15,7 +15,6 @@ export const getAllMemes = () => {
             }
             else {
                 const memes = rows.map((row) => new Meme(row.id, row.meme_url, row.used));
-                console.log(memes);
                 resolve(memes);
             }
         });
@@ -163,10 +162,10 @@ export const getCaptionById = (id) => {
 };
 
 // Retrieve the last id of the game of the user
-export const getLastGameId = (username) => {
+export const getLastGameId = (userId) => {
     return new Promise((resolve, reject) => {
-        const sql = 'SELECT MAX(game_id) as game_id FROM game_history WHERE username = ?';
-        db.get(sql, [username], (err, row) => {
+        const sql = 'SELECT MAX(game_id) as game_id FROM game_history WHERE user_id = ?';
+        db.get(sql, [userId], (err, row) => {
             if (err) {
                 console.error('Errore nel recupero dell\'ultimo id della partita:', err);
                 reject(err);
@@ -179,15 +178,15 @@ export const getLastGameId = (username) => {
 };
 
 // Insert game result into database
-export const insertGameResult = async (username, game) => {
+export const insertGameResult = async (user, game) => {
     try {
-        const id = await getLastGameId(username);
-        const sql = 'INSERT INTO game_history (username, game_id, round, caption_id, caption, meme_id, image, correct, score, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const id = await getLastGameId(user.id);
+        const sql = 'INSERT INTO game_history (user_id, game_id, round, caption_id, caption, meme_id, image, correct, score, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
         for (let i = 0; i < game.length; i++) {
             const { meme, caption, correct, points, round } = game[i];            
             await new Promise((resolve, reject) => {
-                db.run(sql, [username, id, round, caption.id, caption.text, meme.id, meme.memeUrl, correct? 1 : 0, points, dayjs().format("DD-MM-YYYY")], function (err) {
+                db.run(sql, [user.id, id, round, caption.id, caption.text, meme.id, meme.memeUrl, correct? 1 : 0, points, dayjs().format("DD-MM-YYYY")], function (err) {
                     if (err) {
                         reject(err);
                     } else {
@@ -204,14 +203,14 @@ export const insertGameResult = async (username, game) => {
 };
 
 // Retrieve game history of the user
-export const getHistoryGame = (username) => {
+export const getHistoryGame = (userId) => {
     return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM game_history WHERE username = ?';
-        db.all(sql, [username], (err, rows) => {
+        const sql = 'SELECT * FROM game_history WHERE user_id = ?';
+        db.all(sql, [userId], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
-                const games = rows.map(row => new Game(row.username, row.game_id, row.round, row.caption, row.caption_id, row.meme_id, row.image, row.correct, row.score, row.date));
+                const games = rows.map(row => new Game(row.user_id, row.game_id, row.round, row.caption, row.caption_id, row.meme_id, row.image, row.correct, row.score, row.date));
                 resolve(games);
             }
         });

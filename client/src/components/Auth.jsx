@@ -19,9 +19,9 @@ function LoginForm(props) {
         props.login(credentials)
             .then((user) => {
                 if (user) {
-                    setErrorMessage(''); // Reset error message
-                    setShow(false);      // Hide alert
-                    navigate("/game");   // Navigate only if login is successful
+                    setErrorMessage(''); 
+                    setShow(false);      
+                    navigate("/");
                 } else {
                     setErrorMessage("Invalid username and/or password");
                     setShow(true);

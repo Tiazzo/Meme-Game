@@ -11,14 +11,14 @@ import LocalStrategy from 'passport-local';
 import session from 'express-session';
 
 // init
-const app = express();
 const port = 3001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // middleware
-app.use(express.json());
+const app = express();
 app.use(morgan('dev'));
+app.use(express.json());
 
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -27,42 +27,77 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// Express session middleware
+app.use(session({
+    secret: "This is a very secret information used to initialize the session!",
+    resave: false,
+    saveUninitialized: false,
+}));
+
+// Initialize Passport and restore authentication state, if any, from the session.
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Passport: set up local strategy
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
-    console.log('Verifying user', username);
-    const user = await getUser(username, password);
-    if (!user)
-        return cb(null, false, 'Incorrect username or password.');
-
-    return cb(null, user);
+    try {
+        const user = await getUser(username, password);
+        if (!user) {
+            return cb(null, false, { message: 'Incorrect username or password.' });
+        }
+        return cb(null, user);
+    } catch (err) {
+        return cb(err);
+    }
 }));
 
 passport.serializeUser(function (user, cb) {
-    console.log('Serializing user', user);
     cb(null, user);
 });
 
-passport.deserializeUser(function (user, cb) { // this user is id + email + name
-    console.log('Deserializing user', user);
-    return cb(null, user);
+passport.deserializeUser(function (user, cb) {
+    cb(null, user);
 });
 
+// Authentication check middleware
 const isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
     return res.status(401).json({ error: 'Not authorized' });
-}
-
-app.use(session({
-    secret: "jsksfibala",
-    resave: false,
-    saveUninitialized: false,
-}));
-app.use(passport.authenticate('session'));
+};
 
 
 app.use('/public/images', express.static(path.join(__dirname, 'public/images')));
+
+/*** Utility Functions ***/
+
+// This function is used to handle validation errors
+const onValidationErrors = (validationResult, res) => {
+    const errors = validationResult.formatWith(errorFormatter);
+    return res.status(422).json({ validationErrors: errors.mapped() });
+};
+
+// Only keep the error message in the response
+const errorFormatter = ({ msg }) => {
+    return msg;
+};
+
+const gameValidation = [
+    check('user.id').isNumeric().notEmpty(),
+    check('user.username').isString().notEmpty(),
+    check('user.name').isString().notEmpty(),
+    check('game').isArray().notEmpty(),
+    check('game.*.meme.id').isNumeric().notEmpty(),
+    check('game.*.meme.memeUrl').isString().notEmpty(),
+    check('game.*.meme.used').isBoolean().notEmpty(),
+    check('game.*.caption.id').isNumeric().notEmpty(),
+    check('game.*.caption.text').isString(),
+    check('game.*.caption.correct').isBoolean().notEmpty(),
+    check('game.*.correct').isBoolean().notEmpty(),
+    check('game.*.points').isNumeric().notEmpty(),
+    check('game.*.round').isNumeric().notEmpty(),
+];
 
 // ROUTES
 /*********************** MEMES **************************/
@@ -138,7 +173,7 @@ app.get('/api/captions/:captionId/meme/:memeId', (request, response) => {
 });
 
 /*********************** History **************************/
-app.post('/api/games', async (req, res) => {
+app.post('/api/games', isLoggedIn, gameValidation, async (req, res) => {
     const invalidFields = validationResult(req);
 
     if (!invalidFields.isEmpty()) {
@@ -159,9 +194,9 @@ app.post('/api/games', async (req, res) => {
 });
 
 // GET /api/games/history/:username
-app.get('/api/games/history/:username', (request, response) => {
-    const username = request.params.username;
-    getHistoryGame(username)
+app.get('/api/games/history/:userId', isLoggedIn, (request, response) => {
+    const userId = request.params.userId;
+    getHistoryGame(userId)
         .then(result => response.json(result))
         .catch(() => response.status(500).end());
 });
@@ -170,9 +205,7 @@ app.get('/api/games/history/:username', (request, response) => {
 /*********************** SESSIONS **************************/
 // POST /api/sessions
 app.post('/api/sessions', function (req, res, next) {
-    console.log('Logging in user', req.body);
     passport.authenticate('local', (err, user, info) => {
-        console.log('Authenticating user', user);
         if (err)
             return next(err);
         if (!user) {
@@ -193,7 +226,6 @@ app.post('/api/sessions', function (req, res, next) {
 // GET /api/sessions/current
 app.get('/api/sessions/current', (req, res) => {
     if (req.isAuthenticated()) {
-        console.log("eccomi")
         res.json(req.user);
     }
     else

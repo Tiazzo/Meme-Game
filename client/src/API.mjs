@@ -1,6 +1,6 @@
 import { Meme } from './model/Meme.mjs';
 import { Caption } from './model/Caption.mjs';
-import {Game} from './model/Game.mjs';
+import { Game } from './model/Game.mjs';
 
 const SERVER_URL = 'http://localhost:3001/api';
 
@@ -38,6 +38,7 @@ const saveGame = async (user, game) => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ user: user, game: game }),
+            credentials: 'include',
         });
 
         if (!response.ok) {
@@ -52,21 +53,37 @@ const saveGame = async (user, game) => {
     }
 };
 
+
 // Game History functions
-const getGameHistory = async (username) => {
-    const response = await fetch(`${SERVER_URL}/games/history/${username}`);
+const getGameHistory = async (userId) => {
+    const response = await fetch(`${SERVER_URL}/games/history/${userId}`, {
+        method: 'GET',
+        credentials: 'include'
+    });
+
     if (response.ok) {
         const gamesJson = await response.json();
-        return gamesJson.map(game => new Game(game.username, game.game_id, game.round, game.caption, game.caption_id, game.meme_id, game.image, game.correct, game.score, game.date));
-    }
-    else
+        return gamesJson.map(game => new Game(
+            game.user_id,
+            game.game_id,
+            game.round,
+            game.caption,
+            game.caption_id,
+            game.meme_id,
+            game.image,
+            game.correct,
+            game.score,
+            game.date
+        ));
+    } else {
         throw new Error('Internal server error');
-}
+    }
+};
+
 
 
 // Login functions
 const logIn = async (credentials) => {
-    console.log(credentials);
     const response = await fetch(SERVER_URL + '/sessions', {
         method: 'POST',
         headers: {
@@ -75,7 +92,6 @@ const logIn = async (credentials) => {
         credentials: 'include',
         body: JSON.stringify(credentials),
     });
-    console.log(response);
     if (response.ok) {
         const user = await response.json();
         return user;
@@ -87,16 +103,15 @@ const logIn = async (credentials) => {
 
 const getUserInfo = async () => {
     const response = await fetch(SERVER_URL + '/sessions/current', {
-      credentials: 'include',
+        credentials: 'include',
     });
     const user = await response.json();
     if (response.ok) {
-      return user;
+        return user;
     } else {
-        console.error(user);
-      throw user;  // an object with the error coming from the server
+        throw user;  // an object with the error coming from the server
     }
-  };
+};
 
 const logOut = async () => {
     const response = await fetch(SERVER_URL + '/sessions/current', {
@@ -107,5 +122,5 @@ const logOut = async () => {
         return null;
 }
 
-const API = { getMeme, getCaptions, saveGame, logIn, logOut, getUserInfo, getGameHistory};
+const API = { getMeme, getCaptions, saveGame, logIn, logOut, getUserInfo, getGameHistory };
 export default API;

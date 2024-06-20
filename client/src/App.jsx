@@ -32,7 +32,6 @@ function App() {
   const handleLogin = async (credentials) => {
     try {
       const user = await API.logIn(credentials);
-      console.log(user);
       setLoggedIn(true);
       setMessage({ msg: `Welcome, ${user.name}!`, type: 'success' });
       setUser(user);
@@ -60,10 +59,10 @@ function App() {
           <Route index element={<Home loggedIn={loggedIn} />} />
           <Route path="*" element={<NotFoundComponent />} />
           <Route path='/login' element={
-            loggedIn ? <Navigate replace to='/game' /> : <LoginForm login={handleLogin} />
+            loggedIn ? <Navigate replace to='/' /> : <LoginForm login={handleLogin} />
           } />
-          <Route path="/game" element={<Game loggedIn={loggedIn} />} />
-          <Route path="/game-history" element={<GameHistory />} />
+          <Route path="/game" element={<Game loggedIn={loggedIn} user={user} />} />
+          <Route path="/game-history" element={<GameHistory user={user} />} />
         </Routes>
       </Container>
     </div >
