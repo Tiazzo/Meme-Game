@@ -16,6 +16,25 @@ const getMeme = async () => {
         throw new Error('Internal server error');
 }
 
+const restoreMeme = async () => {
+    try {
+        const response = await fetch(SERVER_URL + '/memes', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Errore nel reset del meme');
+        }
+        console.log('Meme resettato con successo');
+    } catch (error) {
+        console.error('Errore nel reset del meme:', error);
+        throw error;
+    }
+};
+
+
 
 // Captions functions
 const getCaptions = async (memeId) => {
@@ -32,6 +51,7 @@ const getCaptions = async (memeId) => {
 // History functions
 const saveGame = async (user, game) => {
     try {
+        console.log("saving");
         const response = await fetch(SERVER_URL + '/games', {
             method: 'POST',
             headers: {
@@ -122,5 +142,5 @@ const logOut = async () => {
         return null;
 }
 
-const API = { getMeme, getCaptions, saveGame, logIn, logOut, getUserInfo, getGameHistory };
+const API = { getMeme, getCaptions, saveGame, logIn, logOut, getUserInfo, getGameHistory, restoreMeme };
 export default API;

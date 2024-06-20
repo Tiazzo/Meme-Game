@@ -50,12 +50,12 @@ export const getRandomMeme = () => {
             }
             const meme = new Meme(row.id, row.meme_url, 1);
             // Mark meme as used
-            // const sql = 'UPDATE meme SET used = 1 WHERE id = ?';
-            // db.run(sql, [meme.id], (err) => {
-            //     if (err) {
-            //         reject(err);
-            //     }
-            // });
+            const sql = 'UPDATE meme SET used = 1 WHERE id = ?';
+            db.run(sql, [meme.id], (err) => {
+                if (err) {
+                    reject(err);
+                }
+            });
             resolve(meme);
         });
     });
@@ -184,9 +184,9 @@ export const insertGameResult = async (user, game) => {
         const sql = 'INSERT INTO game_history (user_id, game_id, round, caption_id, caption, meme_id, image, correct, score, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
         for (let i = 0; i < game.length; i++) {
-            const { meme, caption, correct, points, round } = game[i];            
+            const { meme, caption, correct, points, round } = game[i];
             await new Promise((resolve, reject) => {
-                db.run(sql, [user.id, id, round, caption.id, caption.text, meme.id, meme.memeUrl, correct? 1 : 0, points, dayjs().format("DD-MM-YYYY")], function (err) {
+                db.run(sql, [user.id, id, round, caption.id, caption.text, meme.id, meme.memeUrl, correct ? 1 : 0, points, dayjs().format("DD-MM-YYYY")], function (err) {
                     if (err) {
                         reject(err);
                     } else {

@@ -5,6 +5,7 @@ import '../style/GameComponent.css';
 import API from '../API.mjs';
 import CountdownTimer from './CountdownTimer';
 import { ModalSubmitResponse } from './ModalSubmitResponse';
+import PropTypes from 'prop-types';
 
 const Game = (props) => {
     const navigate = useNavigate();
@@ -27,10 +28,9 @@ const Game = (props) => {
         const fetchMemeAndCaptions = async () => {
             try {
                 const meme = await API.getMeme();
-                //TODO cambiare poi con id del meme
-                const captions = await API.getCaptions(1);
+                const captions = await API.getCaptions(meme.id);
 
-                if (isMounted) { // Check if the component is still mounted
+                if (isMounted) {
                     setMeme(meme);
                     setCaptions(captions);
                     setSelectedCaption(null);
@@ -89,7 +89,16 @@ const Game = (props) => {
         }
     };
 
-    const handleGoHome = () => {
+    const restoreMemeDB = async () => {
+        try {
+            const restoreMeme = await API.restoreMeme();
+        } catch (error) {
+            console.error('Errore nel salvataggio della partita:', error);
+        }
+    }
+
+    const handleGoHome = async () => {
+        await restoreMemeDB();
         setTimerRunning(false);
         navigate("/");
     };
@@ -102,7 +111,8 @@ const Game = (props) => {
         setReloadGame(reloadGame => !reloadGame);
     };
 
-    const handlePlayAgain = () => {
+    const handlePlayAgain = async () => {
+        await restoreMemeDB();
         setShowModal(false);
         setLoading(true);
         setTimerRunning(true);
