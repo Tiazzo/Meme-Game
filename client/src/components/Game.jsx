@@ -74,7 +74,7 @@ const Game = (props) => {
             };
 
             restoreMemeDB();
-            setEndGame(false); // Resetta endGame dopo aver ripristinato il DB
+            setEndGame(false);
         }
     }, [endGame]);
 
