@@ -61,7 +61,7 @@ function App() {
             loggedIn ? <Navigate replace to='/' /> : <LoginForm login={handleLogin} />
           } />
           <Route path="/game" element={<Game loggedIn={loggedIn} user={user} />} />
-          <Route path="/game-history" element={<GameHistory user={user} />} />
+          <Route path="/profile" element={<GameHistory user={user} />} />
         </Routes>
       </Container>
     </div>

@@ -6,7 +6,7 @@ import { useLocation, Link } from "react-router-dom";
 function Header(props) {
     const location = useLocation();
 
-    const hideHomeButton = location.pathname === '/game' || location.pathname === '/game-history';
+    const hideHomeButton = location.pathname === '/game' || location.pathname === '/profile';
 
     return (
         <header style={{

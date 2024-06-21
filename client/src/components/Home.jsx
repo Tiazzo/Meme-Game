@@ -45,7 +45,7 @@ const Home = (props) => {
                 <Row className="justify-content-center" >
                     <Col md={8} className="text-center">
                         <div className="mt-3">
-                            <Link to="/game-history" className="btn " style={{textDecoration:"none", fontWeight:"bold", borderRadius:"15px", backgroundColor:"#FFB86C", color:"white"}}>
+                            <Link to="/profile" className="btn " style={{textDecoration:"none", fontWeight:"bold", borderRadius:"15px", backgroundColor:"#FFB86C", color:"white"}}>
                                 Accedi al tuo storico partite
                             </Link>
                         </div>
