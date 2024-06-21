@@ -47,7 +47,7 @@ function App() {
     setLoggedIn(false);
     setMessage('');
     setUser(null);
-    navigate('/'); // Naviga alla route index ("/")
+    navigate('/');
   };
 
   return (
