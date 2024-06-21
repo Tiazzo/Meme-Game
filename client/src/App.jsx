@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { LoginForm } from './components/Auth'
+import { useEffect, useState } from 'react';
+import { LoginForm } from './components/Auth';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import API from "./API.mjs";
 import NotFoundComponent from './components/NotFoundComponent';
@@ -25,9 +25,9 @@ function App() {
   }, []);
 
   /**
-     * This function handles the login process.
-     * It requires a username and a password inside a "credentials" object.
-     */
+   * This function handles the login process.
+   * It requires a username and a password inside a "credentials" object.
+   */
   const handleLogin = async (credentials) => {
     try {
       const user = await API.logIn(credentials);
@@ -40,18 +40,18 @@ function App() {
   };
 
   /**
-    * This function handles the logout process.
-    */
+   * This function handles the logout process.
+   */
   const handleLogout = async () => {
     await API.logOut();
     setLoggedIn(false);
     setMessage('');
     setUser(null);
-    navigate('/');  // Naviga alla route index ("/")
+    navigate('/'); // Naviga alla route index ("/")
   };
 
   return (
-    <div className="min-vh-100 d-flex flex-column">
+    <div className="min-vh-100 d-flex flex-column" style={{backgroundColor:"#282A36"}}> {/* Aggiunta la classe dark-theme */}
       <Header loggedIn={loggedIn} logout={handleLogout} />
       <Container fluid className="flex-grow-1 d-flex flex-column">
         <Routes>
@@ -64,8 +64,8 @@ function App() {
           <Route path="/game-history" element={<GameHistory user={user} />} />
         </Routes>
       </Container>
-    </div >
+    </div>
   );
 }
 
-export default App
+export default App;

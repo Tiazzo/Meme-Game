@@ -1,20 +1,20 @@
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Image from 'react-bootstrap/Image';
-import '../style/Modal.css'
+import React from 'react';
+import { Button, Modal, Image } from 'react-bootstrap';
+
 function ModalSubmitResponse(props) {
     const correctCaptions = props.selectedCaptions.filter(item => item.correct);
 
     return (
-
         <Modal
             show={props.show}
             onHide={props.handleClose}
             backdrop="static"
             keyboard={false}
+            centered={true}
+            animation={true}
         >
-            <Modal.Header closeButton>
-                <Modal.Title>
+            <Modal.Header>
+                <Modal.Title style={{fontWeight:"bold"}}>
                     {props.loggedIn
                         ? (props.rounds < 3 ? `Fine del round ${props.rounds}` : "Fine della partita")
                         : "Fine della partita"
@@ -42,22 +42,30 @@ function ModalSubmitResponse(props) {
                     </div>
                 )}
                 {props.loggedIn && props.rounds === 3 && correctCaptions.map((item, index) => (
-                    <div key={index} className="selected-caption">
+                    <div key={index} style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: "10px"
+                    }}>
                         <Image
                             src={`http://localhost:3001/public/images/${item.meme.memeUrl}`}
                             alt="Meme"
-                            className="smallImage"
+                            style={{
+                                width: "50px",
+                                height: "50px",
+                                marginRight: "10px",
+                                borderRadius: "50%"
+                            }}
                         />
                         <p>{item.caption.text}</p>
                     </div>
                 ))}
-
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={props.onGoHome}>
+                <Button style={{backgroundColor:"#44475A", border:"none", color:"#F8F8F2"}} onClick={props.onGoHome}>
                     Torna alla Home
                 </Button>
-                <Button variant="primary" onClick={
+                <Button style={{backgroundColor:"#BD93F9", border:"none", color:"#F8F8F2"}} onClick={
                     props.loggedIn ?
                         (props.rounds < 3 ? props.onPlayNextRound : props.onPlayAgain)
                         : props.onPlayAgain
@@ -68,7 +76,7 @@ function ModalSubmitResponse(props) {
                     }
                 </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal >
     );
 }
 

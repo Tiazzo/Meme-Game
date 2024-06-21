@@ -19,6 +19,7 @@ const GameHistory = (props) => {
 
         fetchGameHistory();
     }, [props.user]);
+
     if (!props.user) {
         return <p>Caricamento...</p>;
     }
@@ -34,8 +35,10 @@ const GameHistory = (props) => {
     }, {});
 
     return (
-        <Container className="mt-4">
-            <h1>Ciao {props.user.name}, ecco il tuo storico partite</h1>
+        <Container className="mt-4" style={{ color: "#F8F8F2" }}>
+            <h1 style={{ color: "#F8F8F2" }}>Ciao {props.user.name}!</h1>
+            <p>La tua email: {props.user.username}</p>
+            <h2>Storico partite</h2>
             {games.length === 0 ? (
                 <p>Nessuna partita trovata.</p>
             ) : (
@@ -44,16 +47,21 @@ const GameHistory = (props) => {
                     const totalScore = gameRounds.reduce((sum, round) => sum + round.score, 0);
                     const gameDate = gameRounds[0].date;
                     return (
-                        <div key={gameId} className="mb-4">
+                        <div key={gameId} className="mb-4" style={{ textAlign: "center", marginTop: "40px" }}>
                             <h2>Partita numero {gameId}, giocata il {gameDate}</h2>
-                            <p>Punteggio partita: {totalScore}</p>
-                            <Table striped bordered hover responsive>
+                            <p style={{ fontWeight: "bold" }}>Punteggio partita:  <span style={{ color: "#FFB86C" }}>{totalScore}</span></p>
+                            <Table striped bordered hover responsive style={{
+                                backgroundColor: "#44475A",
+                                color: "#F8F8F2",
+                                borderRadius: "15px",
+                                overflow: "hidden"
+                            }}>
                                 <thead>
                                     <tr>
                                         <th>Round</th>
                                         <th>Meme</th>
                                         <th>Caption selezionata</th>
-                                        <th>Punteggio</th>
+                                        <th>Punteggio round</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -61,7 +69,7 @@ const GameHistory = (props) => {
                                         <tr key={index}>
                                             <td>{round.round}</td>
                                             <td>
-                                                <img src={`http://localhost:3001/public/images/${round.image}`} alt="Meme" style={{ width: '100px' }} />
+                                                <img style={{ maxWidth: "100px" }} src={`http://localhost:3001/public/images/${round.image}`} alt="Meme" />
                                             </td>
                                             <td>{round.caption}</td>
                                             <td>{round.score}</td>
@@ -73,7 +81,7 @@ const GameHistory = (props) => {
                     );
                 })
             )}
-        </Container>
+        </Container >
     );
 };
 

@@ -19,8 +19,8 @@ function LoginForm(props) {
         props.login(credentials)
             .then((user) => {
                 if (user) {
-                    setErrorMessage(''); 
-                    setShow(false);      
+                    setErrorMessage('');
+                    setShow(false);
                     navigate("/");
                 } else {
                     setErrorMessage("Invalid username and/or password");
@@ -33,14 +33,32 @@ function LoginForm(props) {
             });
     };
 
+    const loginContainer = {
+        color: "#f9f9f9",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        paddingTop: "5px"
+    };
+
+    const formContainer = {
+        backgroundColor: "#44475A",
+        padding: "30px",
+        borderRadius: "15px",
+        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
+    };
+
     return (
-        <Container className="login-container">
+        <Container style={loginContainer}>
             <Row className="justify-content-center align-items-center w-100">
                 <Col md={4} className="d-none d-md-block">
                     <Image src="dudes-young-man-giving-a-presentation-about-something.png" fluid />
                 </Col>
-                <Col md={4} className="form-container">
-                    <h1 className="pb-3"><span style={{ color: "#181818" }}>Accedi</span></h1>
+                <Col md={4} style={formContainer}>
+                    <h1 style={{ color: "#F8F8F2" }}>Accedi</h1>
                     <Form onSubmit={handleSubmit}>
                         <Alert
                             dismissible
@@ -70,16 +88,19 @@ function LoginForm(props) {
                                 minLength={6}
                             />
                         </Form.Group>
-                        <Button className="mt-3" type="submit">Login</Button>
+                        <Button className=" mt-3" style={{ backgroundColor: "#BD93F9", border: "none", width: "50%", borderRadius: "15px", alignSelf: "center" }} type="submit">Login</Button>
                     </Form>
+                    <div className="mt-3 text-center">
+                        <Link to="/" style={{
+                            color: "#F8F8F2",
+                            textDecoration: "none",
+                            fontWeight: "bold",
+                            transition: "color 0.3s"
+                        }}>
+                            Torna alla home
+                        </Link>
+                    </div>
                 </Col>
-            </Row>
-            <Row>
-                <div className="mt-3 text-center">
-                    <Link to="/" className="home-link">
-                        Torna alla <span className="home-text">home</span>
-                    </Link>
-                </div>
             </Row>
         </Container>
     );
@@ -99,11 +120,4 @@ LogoutButton.propTypes = {
     logout: PropTypes.func
 }
 
-function LoginButton() {
-    const navigate = useNavigate();
-    return (
-        <Button variant="outline-light" onClick={() => navigate('/login')}>Login</Button>
-    )
-}
-
-export { LoginForm, LogoutButton, LoginButton };
+export { LoginForm, LogoutButton };

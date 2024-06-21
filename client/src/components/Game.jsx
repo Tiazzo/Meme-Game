@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Spinner, Image, Form, Button } from 'react-bootstrap';
-import '../style/GameComponent.css';
 import API from '../API.mjs';
 import CountdownTimer from './CountdownTimer';
 import { ModalSubmitResponse } from './ModalSubmitResponse';
@@ -32,7 +31,7 @@ const Game = (props) => {
         };
 
         restoreMemeDB();
-    }, []); 
+    }, []);
 
     useEffect(() => {
         // Flag to track if the component is mounted
@@ -103,7 +102,7 @@ const Game = (props) => {
             else {
                 setRoundOutcome(selectedCaption.correct ? 'Caption corretta! Hai totalizzato 5 punti' : 'Caption sbagliata! Hai totalizzato 0 punti');
                 setScore(selectedCaption.correct ? 5 : 0);
-                setEndGame(true); 
+                setEndGame(true);
             }
             setShowModal(true);
             setTimerRunning(false);
@@ -118,14 +117,6 @@ const Game = (props) => {
             console.error('Errore nel salvataggio della partita:', error);
         }
     };
-
-    const restoreMemeDB = async () => {
-        try {
-            const restoreMeme = await API.restoreMeme();
-        } catch (error) {
-            console.error('Errore nel salvataggio della partita:', error);
-        }
-    }
 
     const handleGoHome = async () => {
         setEndGame(true);
@@ -172,30 +163,53 @@ const Game = (props) => {
     }
 
     return (
-        <div className="container">
-            <h1 className="title">Seleziona la didascalia migliore prima che scada il tempo!</h1>
+        <div style={{
+            color: "#F8F8F2",
+            maxWidth: "800px",
+            margin: "0 auto",
+            paddingTop: "20px"
+        }}>
+            <h1 style={{
+                fontSize: "24px",
+                marginBottom: "20px"
+            }}>Seleziona la didascalia migliore prima che scada il tempo!</h1>
             <CountdownTimer initialSeconds={30} timerRunning={timerRunning} setTimerRunning={setTimerRunning} onTimerExpired={handleTimerExpired} />
-            <div className="imageContainer">
+            <div style={{
+                marginTop: "20px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center"
+            }}>
                 <Image
                     src={`http://localhost:3001/public/images/${meme.memeUrl}`}
                     rounded
                     alt="Meme"
                     onError={(e) => console.error('Image not found:', meme.memeUrl, e)}
-                    className="memeImage"
+                    style={{
+                        maxWidth: "100%",
+                        marginBottom: "20px"
+                    }}
                 />
-                <div className="captionsContainer">
+                <div style={{
+                    width: "100%", /* Larghezza massima del contenitore delle didascalie */
+                    marginBottom: "20px"
+                }}>
                     <Form.Select
                         aria-label="Seleziona una didascalia"
                         onChange={handleCaptionChange}
                         value={selectedCaption ? selectedCaption.id : ''}
-                        className="captionDropdown"
+                        style={{
+                            width: "100%",
+                        }}
                     >
                         <option value="" disabled>Seleziona una caption</option>
                         {captions.map(caption => (
                             <option
                                 key={caption.id}
                                 value={caption.id}
-                                className="captionOption"
+                                style={{
+                                    width: "100%",
+                                }}
                             >
                                 {caption.text}
                             </option>
@@ -203,7 +217,7 @@ const Game = (props) => {
                     </Form.Select>
                 </div>
                 <div className="d-grid gap-2">
-                    <Button variant="primary" onClick={handleConfirmCaption}>Conferma</Button>
+                    <Button style={{backgroundColor:"#BD93F9", border:"none"}} onClick={handleConfirmCaption}>Conferma</Button>
                 </div>
             </div>
             <ModalSubmitResponse
@@ -220,7 +234,7 @@ const Game = (props) => {
                 selectedCaption={selectedCaption}
                 correctCaptions={captions.filter(item => item.correct)}
             />
-        </div>
+        </div >
     );
 };
 

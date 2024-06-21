@@ -5,29 +5,33 @@ import { useLocation, Link } from "react-router-dom";
 
 function Header(props) {
     const location = useLocation();
-    const hideHomeButton = location.pathname === '/' || location.pathname === '/login';
+
+    // Verifica esplicita per nascondere il bottone nelle route specificate
+    const hideHomeButton = location.pathname === '/game' || location.pathname === '/game-history';
 
     return (
-        <header className="py-2 border-bottom bg-primary text-light">
+        <header style={{
+            backgroundColor: "#282A36", color: "#f9f9f9", padding: "10px 0"
+        }}>
             <Container fluid>
                 <Row className="align-items-center">
                     <Col xs={12} md={4} className="d-flex justify-content-center justify-content-md-start mb-2 mb-md-0">
-                        <a href="/" className="d-flex align-items-center text-light text-decoration-none">
-                            <Image src="icons8-monkas-48.png" roundedCircle height="40" className="me-2" />
+                        <Link to="/" style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "inherit" }}>
+                            <Image src="icons8-monkas-48.png" roundedCircle height="40" style={{ marginRight: "10px" }} />
                             <i className="bi bi-collection-play me-2"></i>
-                            <span className="h5 mb-0">What Do You Meme</span>
-                        </a>
+                            <span style={{ fontSize: "1.5rem", fontWeight: "bold" }}>What Do You Meme</span>
+                        </Link>
                     </Col>
-                    <Col xs={12} md={4} className="d-flex justify-content-center justify-content-md-end">
+                    <Col  xs={12} md={{ span: 4, offset: 4 }} className="d-flex justify-content-end">
                         {props.loggedIn ? (
                             <LogoutButton logout={props.logout} />
                         ) : (
-                            !hideHomeButton && <Button variant="light" as={Link} to="/">Torna all home</Button>
+                            hideHomeButton && <Button variant="primary" as={Link} to="/">Torna alla home</Button>
                         )}
                     </Col>
                 </Row>
             </Container>
-        </header>
+        </header >
     );
 }
 

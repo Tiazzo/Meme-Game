@@ -25,7 +25,7 @@ const CountdownTimer = (props) => {
         return () => {
             clearInterval(timer);
         };
-    }, [props.timerRunning, seconds]); // dipendenze corrette
+    }, [props.timerRunning, seconds]);
 
     const formatTime = (timeInSeconds) => {
         const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
@@ -37,13 +37,28 @@ const CountdownTimer = (props) => {
     };
 
     return (
-        <div>
-            <h3 style={{ color: seconds <= 10 ? 'red' : 'black' }}>{formatTime(seconds)}</h3>
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop: "20px"
+        }}>
+            <h3 style={{
+                marginBottom: "10px",
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                color: seconds <= 10 ? '#FF5555' : "#F8F8F2"
+            }} >{formatTime(seconds)}</h3>
             <ProgressBar
+                style={{
+                    width: "100%",
+                    maxWidth: "300px",
+                    marginBottom: "20px",
+                }}
                 now={calculateProgress()}
                 variant={seconds <= 10 ? 'danger' : 'primary'}
             />
-        </div>
+        </div >
     );
 };
 
