@@ -99,7 +99,6 @@ const gameValidation = [
     check('game.*.round').isNumeric().notEmpty(),
 ];
 
-// ROUTES
 /*********************** MEMES **************************/
 // GET /api/memes 
 // Retrieve a random meme
@@ -113,7 +112,7 @@ app.get('/api/memes', (request, response) => {
 // Restore used meme
 app.put('/api/memes/', (request, response) => {
     restoreUsedMeme()
-        .then(meme => response.json(meme))
+        .then(() => response.json())
         .catch(() => response.status(500).end());
 });
 
