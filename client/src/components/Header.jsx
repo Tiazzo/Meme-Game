@@ -6,7 +6,6 @@ import { useLocation, Link } from "react-router-dom";
 function Header(props) {
     const location = useLocation();
 
-    // Verifica esplicita per nascondere il bottone nelle route specificate
     const hideHomeButton = location.pathname === '/game' || location.pathname === '/game-history';
 
     return (
