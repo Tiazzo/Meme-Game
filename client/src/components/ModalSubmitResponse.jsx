@@ -54,7 +54,6 @@ function ModalSubmitResponse(props) {
                                 width: "50px",
                                 height: "50px",
                                 marginRight: "10px",
-                                borderRadius: "50%"
                             }}
                         />
                         <p>{item.caption.text}</p>
