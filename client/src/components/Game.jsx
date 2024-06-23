@@ -143,12 +143,16 @@ const Game = (props) => {
         setEndGame(true);
     };
 
-    const handleTimerExpired = () => {
+    const handleTimerExpired = async () => {
         const newChoice = { meme: meme, caption: "", correct: false, points: 0, round: rounds };
         const updatedChoices = [...choices, newChoice];
 
         setRoundOutcome('Tempo scaduto! Hai totalizzato 0 punti');
         setChoices(updatedChoices);
+        if (rounds === 3) {
+            await saveGameIntoDB(updatedChoices);
+            setEndGame(true);
+        }
         setShowModal(true);
     };
 

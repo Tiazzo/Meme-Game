@@ -1,6 +1,8 @@
 import { Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
 function CardUserChoice(props) {
+    const [hover, setHover] = useState(false);
     const navigate = useNavigate();
 
     const handleButtonClick = () => {
@@ -20,7 +22,11 @@ function CardUserChoice(props) {
         flexDirection: "column",
         justifyContent: "space-between",
         backgroundColor: "#44475A",
-        color: "#F8F8F2"
+        color: "#F8F8F2",
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        transform: hover ? 'scale(1.05)' : 'scale(1)',
+        boxShadow: hover ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none'
+
     };
 
     const cardBodyStyle = {
@@ -39,7 +45,8 @@ function CardUserChoice(props) {
     };
 
     return (
-        <Card text={"light"} style={cardStyle}>
+        <Card text={"light"} style={cardStyle} onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}>
             <Card.Img variant="top" src={props.imageUrl} style={{ flex: "0 1 auto" }} />
             <Card.Body style={cardBodyStyle}>
                 <Card.Title style={{ fontSize: "22px" }}><b>{props.title}</b></Card.Title>

@@ -186,7 +186,7 @@ export const insertGameResult = async (user, game) => {
         for (let i = 0; i < game.length; i++) {
             const { meme, caption, correct, points, round } = game[i];
             await new Promise((resolve, reject) => {
-                db.run(sql, [user.id, id, round, caption.id, caption.text, meme.id, meme.memeUrl, correct ? 1 : 0, points, dayjs().format("DD-MM-YYYY")], function (err) {
+                db.run(sql, [user.id, id, round, caption.id, caption.text, meme.id, meme.memeUrl, correct ? 1 : 0, points, dayjs().format("DD-MM-YYYY HH:mm")], function (err) {
                     if (err) {
                         reject(err);
                     } else {
