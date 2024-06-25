@@ -16,11 +16,15 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const user = await API.getUserInfo(); // we have the user info here
-      setLoggedIn(true);
-      setUser(user);
-    };
+    try {
+      const checkAuth = async () => {
+        const user = await API.getUserInfo(); // we have the user info here
+        setLoggedIn(true);
+        setUser(user);
+      };
+    } catch (err) {
+      console.log("User not logged in");
+    }
     checkAuth();
   }, []);
 
@@ -51,7 +55,7 @@ function App() {
   };
 
   return (
-    <div className="min-vh-100 d-flex flex-column" style={{backgroundColor:"#282A36"}}> {/* Aggiunta la classe dark-theme */}
+    <div className="min-vh-100 d-flex flex-column" style={{ backgroundColor: "#282A36" }}> {/* Aggiunta la classe dark-theme */}
       <Header loggedIn={loggedIn} logout={handleLogout} />
       <Container fluid className="flex-grow-1 d-flex flex-column">
         <Routes>
