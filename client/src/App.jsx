@@ -16,15 +16,15 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      const checkAuth = async () => {
+    const checkAuth = async () => {
+      try {
         const user = await API.getUserInfo(); // we have the user info here
         setLoggedIn(true);
         setUser(user);
-      };
-    } catch (err) {
-      console.log("User not logged in");
-    }
+      } catch (err) {
+        console.log("User not logged in");
+      }
+    };
     checkAuth();
   }, []);
 
