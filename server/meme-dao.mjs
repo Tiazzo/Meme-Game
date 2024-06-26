@@ -5,40 +5,6 @@ import { Game } from './models/game.mjs';
 import { MemeCaption } from './models/meme-caption.mjs';
 import { db } from './db.mjs';
 import dayjs from 'dayjs';
-// Retrieve all memes
-export const getAllMemes = () => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM meme';
-        db.all(sql, [], (err, rows) => {
-            if (err) {
-                reject(err);
-            }
-            else {
-                const memes = rows.map((row) => new Meme(row.id, row.meme_url, row.used));
-                resolve(memes);
-            }
-        });
-    });
-};
-
-// Retrieve a meme by id
-export const getMemeById = (id) => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM meme WHERE id = ?';
-        db.get(sql, [id], (err, row) => {
-            if (err) {
-                reject(err);
-            }
-            else if (row === undefined) {
-                resolve({ error: 'Meme not found' });
-            }
-            else {
-                const meme = new Meme(row.id, row.meme_url, row.used);
-                resolve(meme);
-            }
-        });
-    });
-};
 
 // Retrieve random meme and mark it as used
 export const getRandomMeme = () => {
@@ -61,25 +27,7 @@ export const getRandomMeme = () => {
     });
 };
 
-
-//
-
-// Retrieve three random memes
-export const getRandomMemes = () => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM meme WHERE used = 0 ORDER BY RANDOM() LIMIT 3';
-        db.all(sql, [], (err, rows) => {
-            if (err) {
-                reject(err);
-            }
-            else {
-                const memes = rows.map((row) => new Meme(row.id, row.url, 1));
-                resolve(memes);
-            }
-        });
-    });
-}
-
+// Restore used meme
 export const restoreUsedMeme = () => {
     return new Promise((resolve, reject) => {
         const sql = 'UPDATE meme SET used = 0';
@@ -96,8 +44,7 @@ export const restoreUsedMeme = () => {
 export const getRandomCaptions = (idMeme) => {
     return new Promise((resolve, reject) => {
         let captions = [];
-
-        // Query per selezionare due didascalie corrette associate al meme
+        // Retrieve two correct captions associated with meme
         const sqlCorrectCaptions = 'SELECT c.id, c.text FROM caption c JOIN meme_caption mc ON c.id = mc.caption_id WHERE mc.meme_id = ? ORDER BY RANDOM() LIMIT 2';
 
         db.all(sqlCorrectCaptions, [idMeme], (err, correctCaptions) => {
@@ -126,36 +73,14 @@ export const getRandomCaptions = (idMeme) => {
                         //Shuffle array
                         let currentIndex = captions.length;
                         while (currentIndex != 0) {
-                            // Pick a remaining element
                             let randomIndex = Math.floor(Math.random() * currentIndex);
                             currentIndex--;
-                            // swap it with the current element
                             [captions[currentIndex], captions[randomIndex]] = [
                                 captions[randomIndex], captions[currentIndex]];
                         }
                         resolve(captions);
                     }
                 });
-            }
-        });
-    });
-};
-
-
-// Retrieve a caption by id
-export const getCaptionById = (id) => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM caption WHERE id = ?';
-        db.get(sql, [id], (err, row) => {
-            if (err) {
-                reject(err);
-            }
-            else if (!row) {
-                resolve({ error: 'Caption not found' });
-            }
-            else {
-                const caption = new Caption(row.id, row.text);
-                resolve(caption);
             }
         });
     });
@@ -216,24 +141,3 @@ export const getHistoryGame = (userId) => {
         });
     });
 };
-
-
-// Check if caption is associated with meme
-export const checkMemeCaption = (captionId, memeId) => {
-    return new Promise((resolve, reject) => {
-        const sql = 'SELECT * FROM meme_caption WHERE meme_id = ? AND caption_id = ?';
-        db.get(sql, [memeId, captionId], (err, row) => {
-            if (err) {
-                reject(err);
-            }
-            else {
-                resolve(row !== undefined);
-            }
-        });
-    });
-};
-
-
-
-
-

@@ -27,6 +27,7 @@ export const getUser = (email, password) => {
   });
 };
 
+// Retrieve a user from the database by id
 export const getUserById = (id) => {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT * FROM user WHERE id = ?';

@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { check, validationResult } from 'express-validator';
 import { getUser } from './user-dao.mjs';
-import { getMemeById, getRandomMeme, getRandomCaptions, restoreUsedMeme, getCaptionById, checkMemeCaption, insertGameResult, getHistoryGame } from './meme-dao.mjs';
+import {getRandomMeme, getRandomCaptions, restoreUsedMeme, insertGameResult, getHistoryGame } from './meme-dao.mjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import passport from 'passport';
@@ -96,7 +96,7 @@ const gameValidation = [
     check('game.*.caption.correct').isBoolean().notEmpty(),
     check('game.*.correct').isBoolean().notEmpty(),
     check('game.*.points').isNumeric().notEmpty(),
-    check('game.*.round').isNumeric().notEmpty(),
+    check('game.*.round').isNumeric().notEmpty().isIn([1, 2, 3]),
 ];
 
 /*********************** MEMES **************************/
@@ -168,7 +168,6 @@ app.post('/api/sessions', function (req, res, next) {
         if (err)
             return next(err);
         if (!user) {
-            // display wrong login messages
             return res.status(401).send(info);
         }
         // success, perform the login
@@ -198,5 +197,4 @@ app.delete('/api/sessions/current', (req, res) => {
     });
 });
 
-// far partire il server
 app.listen(port, () => { console.log(`API server started at http://localhost:${port}`); });
