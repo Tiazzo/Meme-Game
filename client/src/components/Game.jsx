@@ -152,6 +152,7 @@ const Game = (props) => {
             await saveGameIntoDB(updatedChoices);
             setEndGame(true);
         }
+        setSelectedCaption(null);
         setShowModal(true);
     };
 
