@@ -14,6 +14,7 @@
 - **Route `/login`**: Login Page
   - **Page Content and Purpose**: Displays the login form.
   - **Props**: `login` function (`handleLogin`) is passed to handle user login.
+  - **Element**: `<LoginForm />` is rendered.
 
 - **Route `/game`**: Game Page
   - **Page Content and Purpose**: Displays the game interface.
