@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const Home = (props) => {
     return (
         <Container fluid className="flex-grow-1 d-flex flex-column" style={{textAlign:"center", backgroundColor:"#282A36", color:"#F8F8F2"}}>
-            <h1>Benvenuto in <span style={{color:"#FF5555", fontWeight:"bold",}}>What Do You Meme</span>!</h1>
+            <h1>Benvenuto nel <span style={{color:"#FF5555", fontWeight:"bold",}}>Gioco dei meme</span>!</h1>
             <h2 style={{marginTop:"10px"}}>Seleziona la modalità di gioco:</h2>
             <Row className="justify-content-center" style={{marginBottom:"15px", marginTop:"20px"}}>
                 <Col md={4} className="mb-3">

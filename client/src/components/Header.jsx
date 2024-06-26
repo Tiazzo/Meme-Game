@@ -18,7 +18,7 @@ function Header(props) {
                         <Link to="/" style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "inherit" }}>
                             <Image src="icons8-monkas-48.png" roundedCircle height="40" style={{ marginRight: "10px" }} />
                             <i className="bi bi-collection-play me-2"></i>
-                            <span style={{ fontSize: "1.5rem", fontWeight: "bold" }}>What Do You Meme</span>
+                            <span style={{ fontSize: "1.5rem", fontWeight: "bold" }}>Gioco dei meme</span>
                         </Link>
                     </Col>
                     <Col  xs={12} md={{ span: 4, offset: 4 }} className="d-flex justify-content-end">
