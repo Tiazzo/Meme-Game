@@ -98,8 +98,7 @@ const Game = (props) => {
                     await saveGameIntoDB(updatedChoices);
                     setEndGame(true);
                 }
-            }
-            else {
+            } else {
                 setRoundOutcome(selectedCaption.correct ? 'Caption corretta! Hai totalizzato 5 punti' : 'Caption sbagliata! Hai totalizzato 0 punti');
                 setScore(selectedCaption.correct ? 5 : 0);
                 setEndGame(true);
@@ -195,7 +194,7 @@ const Game = (props) => {
                     }}
                 />
                 <div style={{
-                    width: "100%", /* Larghezza massima del contenitore delle didascalie */
+                    width: "100%",
                     marginBottom: "20px"
                 }}>
                     <Form.Select
@@ -221,7 +220,7 @@ const Game = (props) => {
                     </Form.Select>
                 </div>
                 <div className="d-grid gap-2">
-                    <Button style={{backgroundColor:"#BD93F9", border:"none"}} onClick={handleConfirmCaption}>Conferma</Button>
+                    <Button style={{ backgroundColor: "#BD93F9", border: "none" }} onClick={handleConfirmCaption}>Conferma</Button>
                 </div>
             </div>
             <ModalSubmitResponse

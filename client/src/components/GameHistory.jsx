@@ -24,7 +24,7 @@ const GameHistory = (props) => {
         return <p>Caricamento...</p>;
     }
 
-    // Raggruppo i round per partita
+    // Group games by game_id
     const groupedGames = games.reduce((acc, game) => {
         const gameId = game.game_id;
         if (!acc[gameId]) {

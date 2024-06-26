@@ -55,7 +55,7 @@ function App() {
   };
 
   return (
-    <div className="min-vh-100 d-flex flex-column" style={{ backgroundColor: "#282A36" }}> {/* Aggiunta la classe dark-theme */}
+    <div className="min-vh-100 d-flex flex-column" style={{ backgroundColor: "#282A36" }}>
       <Header loggedIn={loggedIn} logout={handleLogout} />
       <Container fluid className="flex-grow-1 d-flex flex-column">
         <Routes>

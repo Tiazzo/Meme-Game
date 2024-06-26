@@ -34,7 +34,6 @@ const restoreMeme = async () => {
 };
 
 
-
 // Captions functions
 const getCaptions = async (memeId) => {
     const response = await fetch(`${SERVER_URL}/captions/meme/${memeId}`);
@@ -71,8 +70,6 @@ const saveGame = async (user, game) => {
     }
 };
 
-
-// Game History functions
 const getGameHistory = async (userId) => {
     const response = await fetch(`${SERVER_URL}/games/history/${userId}`, {
         method: 'GET',
@@ -97,7 +94,6 @@ const getGameHistory = async (userId) => {
         throw new Error('Internal server error');
     }
 };
-
 
 
 // Login functions
@@ -127,7 +123,7 @@ const getUserInfo = async () => {
     if (response.ok) {
         return user;
     } else {
-        throw user;  // an object with the error coming from the server
+        throw user;
     }
 };
 
