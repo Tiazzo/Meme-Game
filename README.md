@@ -1,6 +1,6 @@
 # Meme Game - Inspired by "What Do You Meme?"
 
-This project is an interactive meme game inspired by "What Do You Meme?" where users select captions for meme images. This version features a client-server architecture with separate frontend and backend components.
+This university project is an interactive meme game inspired by "What Do You Meme?" where users select captions for meme images. This version features a client-server architecture with separate frontend and backend components.
 
 ## Project Structure
 
