@@ -1,6 +1,4 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/J0Dv0VMM)
-# Exam #1: "Gioco dei Meme"
-## Student: s324218 CARLINO MATTIA 
+# Meme Game
 
 ## React Client Application Routes
 - **Route `/`**: Home Page
@@ -133,8 +131,3 @@
 
 ![Screenshot](./img/round_game.png)
 ![Screenshot](./img/round_recap.png)
-
-## Users Credentials
-
-- username: mattia.carlino@polito.it, password: appweb2024
-- username: user2@gmail.com, password: webapp2024
